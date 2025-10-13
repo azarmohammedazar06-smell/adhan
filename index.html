@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>💖 Our 3rd Anniversary 💖</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #ffb6c1, #ff7bbf, #ffc1dc);
+    font-family: "Poppins", sans-serif;
+    color: white;
+    text-align: center;
+    overflow: hidden;
+    transition: background 1.5s ease;
+  }
+
+  h1 {
+    font-size: 2.3rem;
+    margin-bottom: 1rem;
+    animation: fadeIn 1.5s ease forwards;
+  }
+
+  p {
+    font-size: 1.2rem;
+    opacity: 0.95;
+    animation: fadeIn 2s ease;
+    line-height: 1.5;
+    margin: 0 1rem;
+  }
+
+  button {
+    margin-top: 2rem;
+    background: white;
+    color: #ff4b7d;
+    padding: 12px 30px;
+    border-radius: 30px;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+  }
+
+  button:hover {
+    transform: scale(1.1);
+    background: #ff4b7d;
+    color: white;
+    box-shadow: 0 0 30px rgba(255, 75, 125, 0.6);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  /* Floating hearts */
+  .heart {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: #ff4b7d;
+    transform: rotate(45deg);
+    animation: float 4s ease-in infinite;
+  }
+
+  .heart::before,
+  .heart::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: #ff4b7d;
+    border-radius: 50%;
+  }
+
+  .heart::before { top: -10px; left: 0; }
+  .heart::after { left: -10px; top: 0; }
+
+  @keyframes float {
+    0% { transform: translateY(0) rotate(45deg); opacity: 1; }
+    100% { transform: translateY(-600px) rotate(45deg); opacity: 0; }
+  }
+
+  .date {
+    margin-top: 10px;
+    font-size: 1rem;
+    opacity: 0.8;
+  }
+
+  /* Final fireworks hearts */
+  .finalHeart {
+    position: absolute;
+    color: #ff4b7d;
+    font-size: 2rem;
+    animation: flyUp 5s linear infinite;
+    opacity: 0.9;
+  }
+
+  @keyframes flyUp {
+    from { transform: translateY(0) scale(1); opacity: 1; }
+    to { transform: translateY(-100vh) scale(0.8); opacity: 0; }
+  }
+
+  .loveText {
+    position: absolute;
+    top: 50%;
+    font-size: 3rem;
+    color: #fff;
+    opacity: 0;
+    animation: fadeText 6s ease-in-out infinite;
+  }
+
+  @keyframes fadeText {
+    0% { opacity: 0; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0.9); }
+  }
+</style>
+</head>
+<body>
+<audio autoplay loop>
+  <source src="----------------------" type="audio/mpeg" />
+</audio>
+
+<div id="page">
+  <h1>From your Chiduuu 💕</h1>
+  <p>Hey my love 😘<br>Click anywhere to start your surprise 💌</p>
+  <p class="date">October 18, 2025 — 3 Years of Us 💞</p>
+</div>
+
+<script>
+
+  function createHeart() {
+    const heart = document.createElement("div");
+    heart.classList.add("heart");
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.animationDuration = Math.random() * 2 + 3 + "s";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 4000);
+  }
+  setInterval(createHeart, 300);
+
+  const pages = [
+    {
+      bg: "linear-gradient(135deg, #ff9eb5, #ff7bc8, #ffc1dc)",
+      title: "💞 Happy 3rd Anniversary 💞",
+      msg: "Three years of laughter, late-night talks, and endless love 💫<br>You’re not just my person — you’re my whole world 🌎❤️",
+      btn: "Next 💕"
+    },
+    {
+      bg: "linear-gradient(135deg, #ffb6c1, #ffa6c9, #ff9cc7)",
+      title: "😚 i dont lie 😚",
+      msg: "Are you a magician? ✨<br>Because whenever I look at you, everything else disappears 💖",
+      btn: "More 👉"
+    },
+    {
+      bg: "linear-gradient(135deg, #ffb3d9, #ff8cc6, #ff4b7d)",
+      title: "💗 uff your eyes 💗",
+      msg: "Do you have a map? 🗺️<br>Because I just keep getting lost in your eyes 👀💞",
+      btn: "Keep Going 😍"
+    },
+    {
+      bg: "linear-gradient(135deg, #ff7ac4, #ff5d9e, #ff94c2)",
+      title: "🌹 CAN I MAM? 🌹",
+      msg: "If kisses were snowflakes ❄️,<br>I’d send you a blizzard 😘",
+      btn: "Next Page 💌"
+    },
+    {
+      bg: "linear-gradient(135deg, #ff6f91, #ff9671, #ffc75f)",
+      title: "💘 COLLEGE WILL END SOON I AM GLADTHATIMET YOU 💘",
+      msg: "You are my heart, my smile, my everything 💞<br>Being with you for 3 years feels like living in a dream 💭🌸",
+      btn: "Continue 💫"
+    },
+    {
+      bg: "linear-gradient(135deg, #ff9eb5, #ffa6c9, #ffc1dc)",
+      title: "🌈 ONE LASTLINE FOR YOU 🌈",
+      msg: "You’re like WiFi 📶 — when you’re gone, I feel lost 😅<br>And when you’re near, everything connects perfectly 💞",
+      btn: "Final Page 💖"
+    },
+    {
+      bg: "linear-gradient(135deg, #ff5d9e, #ff758f, #ffc1dc)",
+      title: "🎆 WILL YOU BE MINE FOREVER MAM? 🎆",
+      msg: "I can’t promise a perfect life, but I promise a life full of love, laughter, and me — always with you 💕<br><br>Happy 3rd Anniversary, my love 💖<br>— Your Chiduuu 💫",
+      btn: "✨ See Surprise ✨"
+    }
+  ];
+
+  let index = 0;
+
+  function showPage(i) {
+    const page = pages[i];
+    document.body.style.background = page.bg;
+    document.getElementById("page").innerHTML = `
+      <h1>${page.title}</h1>
+      <p>${page.msg}</p>
+      <button onclick="nextPage()">${page.btn}</button>
+    `;
+  }
+
+  function nextPage() {
+    index++;
+    if (index < pages.length) {
+      showPage(index);
+    } else {
+      showFinale();
+    }
+  }
+
+  function showFinale() {
+    document.body.style.background = "black";
+    document.getElementById("page").innerHTML = "";
+   
+
+    for (let i = 0; i < 40; i++) {
+      const h = document.createElement("div");
+      h.classList.add("finalHeart");
+      h.textContent = "💖";
+      h.style.left = Math.random() * 100 + "vw";
+      h.style.top = Math.random() * 100 + "vh";
+      h.style.animationDuration = 3 + Math.random() * 3 + "s";
+      document.body.appendChild(h);
+      setTimeout(() => h.remove(), 5000);
+    }
+
+    const love = document.createElement("div");
+    love.classList.add("loveText");
+    love.textContent = "I ❤️ YOU";
+    document.body.appendChild(love);
+
+    setTimeout(() => {
+      document.getElementById("page").innerHTML = `
+        <h1>💞 Forever and Always 💞</h1>
+        <p>Thank you for 3 beautiful years, my love 💫<br>Click anywhere to relive our story again 🌸</p>
+      `;
+      love.remove();
+      document.body.style.background = "linear-gradient(135deg, #ffb3d9, #ff8cc6, #ff4b7d)";
+      index = 0;
+    }, 7000);
+  }
+
+  document.body.onclick = () => showPage(index);
+</script>
+</body>
+</html>
