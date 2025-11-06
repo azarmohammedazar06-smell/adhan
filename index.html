@@ -1,255 +1,267 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>💖 Our 3rd Anniversary 💖</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Love Quiz — Special Hearts Edition 💕</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-
-  body {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(135deg, #ffb6c1, #ff7bbf, #ffc1dc);
-    font-family: "Poppins", sans-serif;
-    color: white;
-    text-align: center;
-    overflow: hidden;
-    transition: background 1.5s ease;
-  }
-
-  h1 {
-    font-size: 2.3rem;
-    margin-bottom: 1rem;
-    animation: fadeIn 1.5s ease forwards;
-  }
-
-  p {
-    font-size: 1.2rem;
-    opacity: 0.95;
-    animation: fadeIn 2s ease;
-    line-height: 1.5;
-    margin: 0 1rem;
-  }
-
-  button {
-    margin-top: 2rem;
-    background: white;
-    color: #ff4b7d;
-    padding: 12px 30px;
-    border-radius: 30px;
-    border: none;
-    font-size: 1rem;
-    cursor: pointer;
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-    transition: all 0.3s ease;
-  }
-
-  button:hover {
-    transform: scale(1.1);
-    background: #ff4b7d;
-    color: white;
-    box-shadow: 0 0 30px rgba(255, 75, 125, 0.6);
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
-  }
-
-  /* Floating hearts */
-  .heart {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    background: #ff4b7d;
-    transform: rotate(45deg);
-    animation: float 4s ease-in infinite;
-  }
-
-  .heart::before,
-  .heart::after {
-    content: "";
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    background: #ff4b7d;
-    border-radius: 50%;
-  }
-
-  .heart::before { top: -10px; left: 0; }
-  .heart::after { left: -10px; top: 0; }
-
-  @keyframes float {
-    0% { transform: translateY(0) rotate(45deg); opacity: 1; }
-    100% { transform: translateY(-600px) rotate(45deg); opacity: 0; }
-  }
-
-  .date {
-    margin-top: 10px;
-    font-size: 1rem;
-    opacity: 0.8;
-  }
-
-  /* Final fireworks hearts */
-  .finalHeart {
-    position: absolute;
-    color: #ff4b7d;
-    font-size: 2rem;
-    animation: flyUp 5s linear infinite;
-    opacity: 0.9;
-  }
-
-  @keyframes flyUp {
-    from { transform: translateY(0) scale(1); opacity: 1; }
-    to { transform: translateY(-100vh) scale(0.8); opacity: 0; }
-  }
-
-  .loveText {
-    position: absolute;
-    top: 50%;
-    font-size: 3rem;
-    color: #fff;
-    opacity: 0;
-    animation: fadeText 6s ease-in-out infinite;
-  }
-
-  @keyframes fadeText {
-    0% { opacity: 0; transform: scale(0.8); }
-    50% { opacity: 1; transform: scale(1); }
-    100% { opacity: 0; transform: scale(0.9); }
-  }
+:root{
+  --bg1:#fff0f5;--bg2:#ffe6eb;
+  --card:#ffffff;--accent:#ff4b6e;--accent-2:#ff92a8;
+  --muted:#7a7a85;--glass:rgba(255,255,255,0.75);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:Poppins,system-ui;}
+body{
+  background:radial-gradient(circle at 20% 20%,var(--bg2),var(--bg1));
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;position:relative;padding:20px;
+}
+.floating-heart{
+  position:absolute;color:#ff5a79;font-size:20px;
+  animation:floatUp 8s linear infinite;opacity:0.7;
+}
+@keyframes floatUp{
+  0%{transform:translateY(0) scale(1);opacity:0.8;}
+  50%{opacity:1;}
+  100%{transform:translateY(-120vh) scale(0.8);opacity:0;}
+}
+.card{
+  width:100%;max-width:850px;border-radius:24px;padding:28px;
+  background:linear-gradient(180deg,rgba(255,255,255,0.9),rgba(255,255,255,0.85));
+  box-shadow:0 10px 50px rgba(255,0,64,0.15);
+  position:relative;z-index:5;animation:fadeIn 1.5s ease forwards;
+}
+@keyframes fadeIn{from{opacity:0;transform:scale(.95);}to{opacity:1;transform:scale(1);}}
+header{display:flex;align-items:center;gap:14px;margin-bottom:10px;}
+.logo{
+  width:64px;height:64px;border-radius:14px;
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  display:flex;align-items:center;justify-content:center;
+  color:white;font-weight:700;font-size:22px;
+  animation:popIn 1.2s ease infinite alternate;
+}
+@keyframes popIn{from{transform:scale(1);}to{transform:scale(1.1);}}
+h1{margin:0;font-size:22px;}
+p.lead{margin-top:6px;color:var(--muted);}
+.screen{display:none;padding:20px 0;text-align:center;}
+.screen.active{display:block;animation:fadeSlide .7s ease forwards;}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.q{background:var(--glass);padding:16px;border-radius:12px;margin-bottom:14px;transition:transform .2s;}
+.q:hover{transform:translateY(-3px);}
+.q h3{margin:0 0 8px 0}
+.options{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+.opt{
+  padding:10px 14px;border-radius:10px;background:white;
+  border:1px solid rgba(0,0,0,0.06);cursor:pointer;
+  user-select:none;transition:all .25s ease;
+}
+.opt:hover{background:#ffe4ec;}
+.opt.selected{
+  background:linear-gradient(135deg,#ff87a0,#ffb2c0);
+  color:white;transform:scale(1.05);
+}
+.btn{
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  color:white;padding:12px 18px;border-radius:999px;
+  border:none;cursor:pointer;font-weight:600;
+  transition:all .2s ease;box-shadow:0 4px 12px rgba(255,75,110,.3);
+}
+.btn:hover{transform:translateY(-2px) scale(1.05);}
+.pickup-line{
+  font-size:20px;font-weight:500;color:#ff3e6e;
+  padding:24px;background:linear-gradient(180deg,rgba(255,245,247,0.9),white);
+  border-radius:16px;box-shadow:0 2px 15px rgba(0,0,0,0.08);
+  margin-bottom:20px;animation:pop .8s ease;
+}
+@keyframes pop{from{opacity:0;transform:scale(.9);}to{opacity:1;transform:scale(1);}}
+.line-controls{display:flex;justify-content:center;gap:12px;}
+.final{display:flex;flex-direction:column;align-items:center;gap:16px;padding:30px;}
+.heart{font-size:64px;animation:beat 1s ease infinite alternate;}
+@keyframes beat{from{transform:scale(1);}to{transform:scale(1.15);}}
+.love-ask{display:flex;gap:14px;align-items:center;}
+.yes{background:linear-gradient(135deg,var(--accent),var(--accent-2));padding:14px 20px;border-radius:999px;border:none;color:white;font-weight:700;cursor:pointer;transition:transform .15s ease;}
+.no{background:transparent;border:2px solid rgba(0,0,0,0.1);padding:12px 16px;border-radius:12px;cursor:pointer;}
+.overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.35);z-index:1000;}
+.overlay.show{display:flex;}
+.popup{background:white;padding:28px;border-radius:16px;box-shadow:0 18px 60px rgba(0,0,0,0.35);text-align:center;animation:pop .6s ease;}
+@media(max-width:600px){.card{padding:18px}.logo{width:56px;height:56px}}
 </style>
 </head>
 <body>
-<audio autoplay loop>
-  <source src="----------------------" type="audio/mpeg" />
-</audio>
+<div id="hearts"></div>
+<div class="card">
+  <header>
+    <div class="logo">💘</div>
+    <div>
+      <h1>Special Love Quiz 💖</h1>
+      <p class="lead">Answer our cute memories right... and you’ll see magic happen ✨</p>
+    </div>
+  </header>
 
-<div id="page">
-  <h1>From your Chiduuu 💕</h1>
-  <p>Hey my love 😘<br>Click anywhere to start your surprise 💌</p>
-  <p class="date">October 18, 2025 — 3 Years of Us 💞</p>
+  <div id="intro" class="screen active">
+    <p class="muted">Let’s relive our sweetest moments. Ready?</p>
+    <button class="btn" id="startBtn">Start the Love Quiz 💕</button>
+  </div>
+
+  <div id="quiz" class="screen">
+    <div id="questions"></div>
+    <button class="btn" id="submitQuiz">Submit Answers</button>
+  </div>
+
+  <div id="pickup" class="screen">
+    <h2>You did it! You’re my heart’s queen 👑</h2>
+    <div id="pickupContainer"></div>
+    <div class="line-controls">
+      <button class="btn" id="prevLine">⬅ Back</button>
+      <button class="btn" id="nextLine">Next ➡</button>
+    </div>
+  </div>
+
+  <div id="final" class="screen">
+    <div class="final">
+      <div class="heart">💓</div>
+      <h2>I love you forever 💞</h2>
+      <p class="muted">Do you love me too?</p>
+      <div class="love-ask">
+        <button id="yesBtn" class="yes">Yes 💖</button>
+        <button id="noBtn" class="no">No 😅</button>
+      </div>
+    </div>
+  </div>
 </div>
 
+<div id="overlay" class="overlay">
+  <div class="popup">
+    <h2>Yesss! 🎉</h2>
+    <p>Love wins again 💘</p>
+    <button class="btn" id="closePopup">Close</button>
+  </div>
+</div>
+
+<audio id="heartbeat" src="https://cdn.pixabay.com/download/audio/2022/03/02/audio_52dc0b4b8d.mp3?filename=heartbeat-20389.mp3"></audio>
+
 <script>
+const config={
+  questions:[
+    {q:'Where did we go first?',options:['Cafe','School','Town'],answer:1},
+    {q:'What is my nickname for you?',options:['Aduuu','Baby','Bun'],answer:0},
+    {q:'Which colour I like?',options:['Blue','Red','Black'],answer:2}
+  ],
+  pickupLines:[
+    'I must be a snowflake, because I’ve fallen for you.',
+    'You’re my today and all of my tomorrows.',
+    'Are you a magician? Because every time I look at you, everyone else disappears.',
+    'You’re the missing piece to my heart puzzle.',
+    'Every love story is beautiful, but ours is my favorite.'
+  ]
+};
 
-  function createHeart() {
-    const heart = document.createElement("div");
-    heart.classList.add("heart");
-    heart.style.left = Math.random() * 100 + "vw";
-    heart.style.animationDuration = Math.random() * 2 + 3 + "s";
-    document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 4000);
+const intro=document.getElementById('intro'),
+quiz=document.getElementById('quiz'),
+pickup=document.getElementById('pickup'),
+final=document.getElementById('final'),
+questionsWrap=document.getElementById('questions'),
+pickupContainer=document.getElementById('pickupContainer'),
+startBtn=document.getElementById('startBtn'),
+submitQuiz=document.getElementById('submitQuiz'),
+prevLine=document.getElementById('prevLine'),
+nextLine=document.getElementById('nextLine'),
+overlay=document.getElementById('overlay'),
+closePopup=document.getElementById('closePopup'),
+yesBtn=document.getElementById('yesBtn'),
+noBtn=document.getElementById('noBtn'),
+heartbeat=document.getElementById('heartbeat');
+
+function show(id){[intro,quiz,pickup,final].forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function renderQuestions(){
+  questionsWrap.innerHTML='';
+  config.questions.forEach((item,idx)=>{
+    const q=document.createElement('div');q.className='q';
+    q.innerHTML=`<h3>${idx+1}. ${item.q}</h3>`;
+    const opts=document.createElement('div');opts.className='options';
+    item.options.forEach((op,i)=>{
+      const b=document.createElement('div');b.className='opt';b.textContent=op;
+      b.addEventListener('click',()=>{
+        [...opts.children].forEach(c=>c.classList.remove('selected'));
+        b.classList.add('selected');b.dataset.selectedIndex=i;
+      });
+      opts.appendChild(b);
+    });
+    q.appendChild(opts);questionsWrap.appendChild(q);
+  });
+}
+startBtn.onclick=()=>{renderQuestions();show('quiz');}
+submitQuiz.onclick=()=>{
+  const answers=[],qs=questionsWrap.querySelectorAll('.q');
+  qs.forEach((q,idx)=>{
+    const sel=q.querySelector('.opt.selected');
+    answers.push(sel?Number(sel.dataset.selectedIndex):null);
+  });
+  let all=true;answers.forEach((a,i)=>{if(a!==config.questions[i].answer)all=false});
+  if(all){show('pickup');showPickupLine(0);}
+  else alert('Try again baby 💞');
+};
+
+let currentLine=0;
+function showPickupLine(i){
+  pickupContainer.innerHTML='';
+  const text=document.createElement('div');
+  text.className='pickup-line';
+  text.textContent=config.pickupLines[i];
+  pickupContainer.appendChild(text);
+  prevLine.style.display=i>0?'inline-block':'none';
+  nextLine.textContent=(i===config.pickupLines.length-1)?'Next ❤️':'Next ➡';
+}
+prevLine.onclick=()=>{if(currentLine>0){currentLine--;showPickupLine(currentLine);}}
+nextLine.onclick=()=>{
+  if(currentLine<config.pickupLines.length-1){currentLine++;showPickupLine(currentLine);}
+  else show('final');
+};
+
+let yesScale=1;
+noBtn.onmouseenter=()=>{
+  yesScale+=0.1;
+  yesBtn.style.transform=`scale(${yesScale})`;
+  noBtn.style.transform=`translate(${(Math.random()*100)-50}px,${(Math.random()*60)-30}px)`;
+};
+noBtn.onclick=(e)=>{
+  e.preventDefault();
+  yesScale+=0.1;
+  yesBtn.style.transform=`scale(${yesScale})`;
+  alert('Awww, don’t say no cutie ❤️');
+};
+yesBtn.onclick=()=>{
+  overlay.classList.add('show');
+  heartbeat.play();
+  spawnConfetti();
+};
+closePopup.onclick=()=>overlay.classList.remove('show');
+
+function spawnHeart(){
+  const h=document.createElement('div');
+  h.className='floating-heart';h.textContent='💖';
+  h.style.left=Math.random()*100+'vw';
+  h.style.animationDuration=6+Math.random()*4+'s';
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),9000);
+}
+setInterval(spawnHeart,700);
+
+function spawnConfetti(){
+  for(let i=0;i<40;i++){
+    const c=document.createElement('div');
+    c.textContent=['💖','💘','💞'][Math.floor(Math.random()*3)];
+    c.style.position='fixed';
+    c.style.left=Math.random()*100+'vw';
+    c.style.top='100vh';
+    c.style.fontSize=20+Math.random()*20+'px';
+    c.style.animation=`floatUp ${4+Math.random()*4}s linear forwards`;
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),6000);
   }
-  setInterval(createHeart, 300);
-
-  const pages = [
-    {
-      bg: "linear-gradient(135deg, #ff9eb5, #ff7bc8, #ffc1dc)",
-      title: "💞 Happy 3rd Anniversary 💞",
-      msg: "Three years of laughter, late-night talks, and endless love 💫<br>You’re not just my person — you’re my whole world 🌎❤️",
-      btn: "Next 💕"
-    },
-    {
-      bg: "linear-gradient(135deg, #ffb6c1, #ffa6c9, #ff9cc7)",
-      title: "😚 i dont lie 😚",
-      msg: "Are you a magician? ✨<br>Because whenever I look at you, everything else disappears 💖",
-      btn: "More 👉"
-    },
-    {
-      bg: "linear-gradient(135deg, #ffb3d9, #ff8cc6, #ff4b7d)",
-      title: "💗 uff your eyes 💗",
-      msg: "Do you have a map? 🗺️<br>Because I just keep getting lost in your eyes 👀💞",
-      btn: "Keep Going 😍"
-    },
-    {
-      bg: "linear-gradient(135deg, #ff7ac4, #ff5d9e, #ff94c2)",
-      title: "🌹 CAN I MAM? 🌹",
-      msg: "If kisses were snowflakes ❄️,<br>I’d send you a blizzard 😘",
-      btn: "Next Page 💌"
-    },
-    {
-      bg: "linear-gradient(135deg, #ff6f91, #ff9671, #ffc75f)",
-      title: "💘 COLLEGE WILL END SOON I AM GLADTHATIMET YOU 💘",
-      msg: "You are my heart, my smile, my everything 💞<br>Being with you for 3 years feels like living in a dream 💭🌸",
-      btn: "Continue 💫"
-    },
-    {
-      bg: "linear-gradient(135deg, #ff9eb5, #ffa6c9, #ffc1dc)",
-      title: "🌈 ONE LASTLINE FOR YOU 🌈",
-      msg: "You’re like WiFi 📶 — when you’re gone, I feel lost 😅<br>And when you’re near, everything connects perfectly 💞",
-      btn: "Final Page 💖"
-    },
-    {
-      bg: "linear-gradient(135deg, #ff5d9e, #ff758f, #ffc1dc)",
-      title: "🎆 WILL YOU BE MINE FOREVER MAM? 🎆",
-      msg: "I can’t promise a perfect life, but I promise a life full of love, laughter, and me — always with you 💕<br><br>Happy 3rd Anniversary, my love 💖<br>— Your Chiduuu 💫",
-      btn: "✨ See Surprise ✨"
-    }
-  ];
-
-  let index = 0;
-
-  function showPage(i) {
-    const page = pages[i];
-    document.body.style.background = page.bg;
-    document.getElementById("page").innerHTML = `
-      <h1>${page.title}</h1>
-      <p>${page.msg}</p>
-      <button onclick="nextPage()">${page.btn}</button>
-    `;
-  }
-
-  function nextPage() {
-    index++;
-    if (index < pages.length) {
-      showPage(index);
-    } else {
-      showFinale();
-    }
-  }
-
-  function showFinale() {
-    document.body.style.background = "black";
-    document.getElementById("page").innerHTML = "";
-   
-
-    for (let i = 0; i < 40; i++) {
-      const h = document.createElement("div");
-      h.classList.add("finalHeart");
-      h.textContent = "💖";
-      h.style.left = Math.random() * 100 + "vw";
-      h.style.top = Math.random() * 100 + "vh";
-      h.style.animationDuration = 3 + Math.random() * 3 + "s";
-      document.body.appendChild(h);
-      setTimeout(() => h.remove(), 5000);
-    }
-
-    const love = document.createElement("div");
-    love.classList.add("loveText");
-    love.textContent = "I ❤️ YOU";
-    document.body.appendChild(love);
-
-    setTimeout(() => {
-      document.getElementById("page").innerHTML = `
-        <h1>💞 Forever and Always 💞</h1>
-        <p>Thank you for 3 beautiful years, my love 💫<br>Click anywhere to relive our story again 🌸</p>
-      `;
-      love.remove();
-      document.body.style.background = "linear-gradient(135deg, #ffb3d9, #ff8cc6, #ff4b7d)";
-      index = 0;
-    }, 7000);
-  }
-
-  document.body.onclick = () => showPage(index);
+}
 </script>
 </body>
 </html>
