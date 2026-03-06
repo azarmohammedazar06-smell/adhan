@@ -1,267 +1,567 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Love Quiz — Special Hearts Edition 💕</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<title>CoorgCare Property Market</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
-:root{
-  --bg1:#fff0f5;--bg2:#ffe6eb;
-  --card:#ffffff;--accent:#ff4b6e;--accent-2:#ff92a8;
-  --muted:#7a7a85;--glass:rgba(255,255,255,0.75);
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Segoe UI;
 }
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;font-family:Poppins,system-ui;}
+
 body{
-  background:radial-gradient(circle at 20% 20%,var(--bg2),var(--bg1));
-  display:flex;align-items:center;justify-content:center;
-  overflow:hidden;position:relative;padding:20px;
+background:#f2f4f7;
 }
-.floating-heart{
-  position:absolute;color:#ff5a79;font-size:20px;
-  animation:floatUp 8s linear infinite;opacity:0.7;
+
+/* SPLASH */
+
+#splash{
+position:fixed;
+top:0;
+left:0;
+height:100vh;
+width:100%;
+background:linear-gradient(135deg,#004aad,#00c6ff);
+display:flex;
+align-items:center;
+justify-content:center;
+color:white;
+font-size:40px;
+font-weight:bold;
+animation:fadeOut 3s forwards;
+z-index:1000;
 }
-@keyframes floatUp{
-  0%{transform:translateY(0) scale(1);opacity:0.8;}
-  50%{opacity:1;}
-  100%{transform:translateY(-120vh) scale(0.8);opacity:0;}
+
+@keyframes fadeOut{
+0%{opacity:1}
+80%{opacity:1}
+100%{opacity:0;visibility:hidden}
 }
-.card{
-  width:100%;max-width:850px;border-radius:24px;padding:28px;
-  background:linear-gradient(180deg,rgba(255,255,255,0.9),rgba(255,255,255,0.85));
-  box-shadow:0 10px 50px rgba(255,0,64,0.15);
-  position:relative;z-index:5;animation:fadeIn 1.5s ease forwards;
+
+/* HEADER */
+
+header{
+background:white;
+padding:15px 30px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+box-shadow:0 3px 10px rgba(0,0,0,0.1);
 }
-@keyframes fadeIn{from{opacity:0;transform:scale(.95);}to{opacity:1;transform:scale(1);}}
-header{display:flex;align-items:center;gap:14px;margin-bottom:10px;}
+
 .logo{
-  width:64px;height:64px;border-radius:14px;
-  background:linear-gradient(135deg,var(--accent),var(--accent-2));
-  display:flex;align-items:center;justify-content:center;
-  color:white;font-weight:700;font-size:22px;
-  animation:popIn 1.2s ease infinite alternate;
+font-size:24px;
+font-weight:bold;
+color:#004aad;
 }
-@keyframes popIn{from{transform:scale(1);}to{transform:scale(1.1);}}
-h1{margin:0;font-size:22px;}
-p.lead{margin-top:6px;color:var(--muted);}
-.screen{display:none;padding:20px 0;text-align:center;}
-.screen.active{display:block;animation:fadeSlide .7s ease forwards;}
-@keyframes fadeSlide{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
-.q{background:var(--glass);padding:16px;border-radius:12px;margin-bottom:14px;transition:transform .2s;}
-.q:hover{transform:translateY(-3px);}
-.q h3{margin:0 0 8px 0}
-.options{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
-.opt{
-  padding:10px 14px;border-radius:10px;background:white;
-  border:1px solid rgba(0,0,0,0.06);cursor:pointer;
-  user-select:none;transition:all .25s ease;
+
+nav button{
+padding:8px 14px;
+border:none;
+background:#004aad;
+color:white;
+border-radius:6px;
+cursor:pointer;
 }
-.opt:hover{background:#ffe4ec;}
-.opt.selected{
-  background:linear-gradient(135deg,#ff87a0,#ffb2c0);
-  color:white;transform:scale(1.05);
+
+/* LOGIN */
+
+#authPage{
+display:flex;
+justify-content:center;
+align-items:center;
+height:80vh;
 }
+
+.authBox{
+background:white;
+padding:30px;
+width:350px;
+border-radius:10px;
+box-shadow:0 10px 30px rgba(0,0,0,0.1);
+}
+
+.authBox input,select{
+width:100%;
+margin:8px 0;
+padding:10px;
+border:1px solid #ddd;
+border-radius:6px;
+}
+
+.authBox button{
+width:100%;
+padding:10px;
+background:#004aad;
+color:white;
+border:none;
+margin-top:10px;
+border-radius:6px;
+}
+
+/* DASHBOARD */
+
+#dashboard{
+display:none;
+padding:20px;
+}
+
+/* SEARCH */
+
+.searchBar{
+display:flex;
+gap:10px;
+margin-bottom:20px;
+}
+
+.searchBar input{
+flex:1;
+padding:10px;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+/* GRID */
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:20px;
+}
+
+/* PROPERTY CARD */
+
+.card{
+background:white;
+border-radius:10px;
+overflow:hidden;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+transition:0.3s;
+}
+
+.card:hover{
+transform:translateY(-5px);
+}
+
+.card img{
+width:100%;
+height:180px;
+object-fit:cover;
+}
+
+.card-body{
+padding:15px;
+}
+
+.price{
+color:#00a65a;
+font-weight:bold;
+}
+
 .btn{
-  background:linear-gradient(135deg,var(--accent),var(--accent-2));
-  color:white;padding:12px 18px;border-radius:999px;
-  border:none;cursor:pointer;font-weight:600;
-  transition:all .2s ease;box-shadow:0 4px 12px rgba(255,75,110,.3);
+padding:8px 12px;
+border:none;
+border-radius:6px;
+background:#004aad;
+color:white;
+margin-top:8px;
+cursor:pointer;
 }
-.btn:hover{transform:translateY(-2px) scale(1.05);}
-.pickup-line{
-  font-size:20px;font-weight:500;color:#ff3e6e;
-  padding:24px;background:linear-gradient(180deg,rgba(255,245,247,0.9),white);
-  border-radius:16px;box-shadow:0 2px 15px rgba(0,0,0,0.08);
-  margin-bottom:20px;animation:pop .8s ease;
+
+.wishlist{
+background:#ff4b5c;
 }
-@keyframes pop{from{opacity:0;transform:scale(.9);}to{opacity:1;transform:scale(1);}}
-.line-controls{display:flex;justify-content:center;gap:12px;}
-.final{display:flex;flex-direction:column;align-items:center;gap:16px;padding:30px;}
-.heart{font-size:64px;animation:beat 1s ease infinite alternate;}
-@keyframes beat{from{transform:scale(1);}to{transform:scale(1.15);}}
-.love-ask{display:flex;gap:14px;align-items:center;}
-.yes{background:linear-gradient(135deg,var(--accent),var(--accent-2));padding:14px 20px;border-radius:999px;border:none;color:white;font-weight:700;cursor:pointer;transition:transform .15s ease;}
-.no{background:transparent;border:2px solid rgba(0,0,0,0.1);padding:12px 16px;border-radius:12px;cursor:pointer;}
-.overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.35);z-index:1000;}
-.overlay.show{display:flex;}
-.popup{background:white;padding:28px;border-radius:16px;box-shadow:0 18px 60px rgba(0,0,0,0.35);text-align:center;animation:pop .6s ease;}
-@media(max-width:600px){.card{padding:18px}.logo{width:56px;height:56px}}
+
+/* SELLER PANEL */
+
+#sellerPanel{
+margin-top:20px;
+background:white;
+padding:20px;
+border-radius:10px;
+display:none;
+}
+
+#sellerPanel input{
+width:100%;
+margin:8px 0;
+padding:10px;
+border:1px solid #ddd;
+border-radius:6px;
+}
+
+/* MODAL */
+
+.modal{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.5);
+display:none;
+align-items:center;
+justify-content:center;
+}
+
+.modal-content{
+background:white;
+padding:20px;
+border-radius:10px;
+width:400px;
+}
+
 </style>
 </head>
+
 <body>
-<div id="hearts"></div>
-<div class="card">
-  <header>
-    <div class="logo">💘</div>
-    <div>
-      <h1>Special Love Quiz 💖</h1>
-      <p class="lead">Answer our cute memories right... and you’ll see magic happen ✨</p>
-    </div>
-  </header>
 
-  <div id="intro" class="screen active">
-    <p class="muted">Let’s relive our sweetest moments. Ready?</p>
-    <button class="btn" id="startBtn">Start the Love Quiz 💕</button>
-  </div>
+<div id="splash">CoorgCare Property</div>
 
-  <div id="quiz" class="screen">
-    <div id="questions"></div>
-    <button class="btn" id="submitQuiz">Submit Answers</button>
-  </div>
+<header>
+<div class="logo">CoorgCare</div>
+<nav>
+<button onclick="logout()">Logout</button>
+</nav>
+</header>
 
-  <div id="pickup" class="screen">
-    <h2>You did it! You’re my heart’s queen 👑</h2>
-    <div id="pickupContainer"></div>
-    <div class="line-controls">
-      <button class="btn" id="prevLine">⬅ Back</button>
-      <button class="btn" id="nextLine">Next ➡</button>
-    </div>
-  </div>
+<!-- LOGIN -->
 
-  <div id="final" class="screen">
-    <div class="final">
-      <div class="heart">💓</div>
-      <h2>I love you forever 💞</h2>
-      <p class="muted">Do you love me too?</p>
-      <div class="love-ask">
-        <button id="yesBtn" class="yes">Yes 💖</button>
-        <button id="noBtn" class="no">No 😅</button>
-      </div>
-    </div>
-  </div>
+<div id="authPage">
+
+<div class="authBox">
+
+<h2>Login / Register</h2>
+
+<input id="username" placeholder="Username">
+<input id="password" type="password" placeholder="Password">
+
+<select id="role">
+<option value="buyer">Buyer</option>
+<option value="seller">Seller</option>
+</select>
+
+<button onclick="register()">Register</button>
+<button onclick="login()">Login</button>
+
 </div>
 
-<div id="overlay" class="overlay">
-  <div class="popup">
-    <h2>Yesss! 🎉</h2>
-    <p>Love wins again 💘</p>
-    <button class="btn" id="closePopup">Close</button>
-  </div>
 </div>
 
-<audio id="heartbeat" src="https://cdn.pixabay.com/download/audio/2022/03/02/audio_52dc0b4b8d.mp3?filename=heartbeat-20389.mp3"></audio>
+<!-- DASHBOARD -->
+
+<div id="dashboard">
+
+<div class="searchBar">
+<input id="searchInput" placeholder="Search property location..." onkeyup="searchProperty()">
+<button class="btn" onclick="showWishlist()">Wishlist</button>
+</div>
+
+<div class="grid" id="propertyList"></div>
+
+<div id="sellerPanel">
+
+<h3>Add Property</h3>
+
+<input id="title" placeholder="Property Title">
+<input id="location" placeholder="Location">
+<input id="price" placeholder="Price">
+<input type="file" id="image">
+<input type="file" id="video">
+
+<button class="btn" onclick="addProperty()">Add Property</button>
+
+</div>
+
+</div>
+
+<div class="modal" id="modal">
+<div class="modal-content" id="modalContent"></div>
+</div>
 
 <script>
-const config={
-  questions:[
-    {q:'Where did we go first?',options:['Cafe','School','Town'],answer:1},
-    {q:'What is my nickname for you?',options:['Aduuu','Baby','Bun'],answer:0},
-    {q:'Which colour I like?',options:['Blue','Red','Black'],answer:2}
-  ],
-  pickupLines:[
-    'I must be a snowflake, because I’ve fallen for you.',
-    'You’re my today and all of my tomorrows.',
-    'Are you a magician? Because every time I look at you, everyone else disappears.',
-    'You’re the missing piece to my heart puzzle.',
-    'Every love story is beautiful, but ours is my favorite.'
-  ]
-};
 
-const intro=document.getElementById('intro'),
-quiz=document.getElementById('quiz'),
-pickup=document.getElementById('pickup'),
-final=document.getElementById('final'),
-questionsWrap=document.getElementById('questions'),
-pickupContainer=document.getElementById('pickupContainer'),
-startBtn=document.getElementById('startBtn'),
-submitQuiz=document.getElementById('submitQuiz'),
-prevLine=document.getElementById('prevLine'),
-nextLine=document.getElementById('nextLine'),
-overlay=document.getElementById('overlay'),
-closePopup=document.getElementById('closePopup'),
-yesBtn=document.getElementById('yesBtn'),
-noBtn=document.getElementById('noBtn'),
-heartbeat=document.getElementById('heartbeat');
+/* ELEMENTS */
 
-function show(id){[intro,quiz,pickup,final].forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
-function renderQuestions(){
-  questionsWrap.innerHTML='';
-  config.questions.forEach((item,idx)=>{
-    const q=document.createElement('div');q.className='q';
-    q.innerHTML=`<h3>${idx+1}. ${item.q}</h3>`;
-    const opts=document.createElement('div');opts.className='options';
-    item.options.forEach((op,i)=>{
-      const b=document.createElement('div');b.className='opt';b.textContent=op;
-      b.addEventListener('click',()=>{
-        [...opts.children].forEach(c=>c.classList.remove('selected'));
-        b.classList.add('selected');b.dataset.selectedIndex=i;
-      });
-      opts.appendChild(b);
-    });
-    q.appendChild(opts);questionsWrap.appendChild(q);
-  });
+const username=document.getElementById("username")
+const password=document.getElementById("password")
+const role=document.getElementById("role")
+
+const authPage=document.getElementById("authPage")
+const dashboard=document.getElementById("dashboard")
+const sellerPanel=document.getElementById("sellerPanel")
+
+const propertyList=document.getElementById("propertyList")
+const modal=document.getElementById("modal")
+const modalContent=document.getElementById("modalContent")
+
+/* REGISTER */
+
+function register(){
+
+if(!username.value || !password.value){
+alert("Enter username and password")
+return
 }
-startBtn.onclick=()=>{renderQuestions();show('quiz');}
-submitQuiz.onclick=()=>{
-  const answers=[],qs=questionsWrap.querySelectorAll('.q');
-  qs.forEach((q,idx)=>{
-    const sel=q.querySelector('.opt.selected');
-    answers.push(sel?Number(sel.dataset.selectedIndex):null);
-  });
-  let all=true;answers.forEach((a,i)=>{if(a!==config.questions[i].answer)all=false});
-  if(all){show('pickup');showPickupLine(0);}
-  else alert('Try again baby 💞');
-};
 
-let currentLine=0;
-function showPickupLine(i){
-  pickupContainer.innerHTML='';
-  const text=document.createElement('div');
-  text.className='pickup-line';
-  text.textContent=config.pickupLines[i];
-  pickupContainer.appendChild(text);
-  prevLine.style.display=i>0?'inline-block':'none';
-  nextLine.textContent=(i===config.pickupLines.length-1)?'Next ❤️':'Next ➡';
+let users=JSON.parse(localStorage.getItem("users"))||[]
+
+let user={
+username:username.value,
+password:password.value,
+role:role.value
 }
-prevLine.onclick=()=>{if(currentLine>0){currentLine--;showPickupLine(currentLine);}}
-nextLine.onclick=()=>{
-  if(currentLine<config.pickupLines.length-1){currentLine++;showPickupLine(currentLine);}
-  else show('final');
-};
 
-let yesScale=1;
-noBtn.onmouseenter=()=>{
-  yesScale+=0.1;
-  yesBtn.style.transform=`scale(${yesScale})`;
-  noBtn.style.transform=`translate(${(Math.random()*100)-50}px,${(Math.random()*60)-30}px)`;
-};
-noBtn.onclick=(e)=>{
-  e.preventDefault();
-  yesScale+=0.1;
-  yesBtn.style.transform=`scale(${yesScale})`;
-  alert('Awww, don’t say no cutie ❤️');
-};
-yesBtn.onclick=()=>{
-  overlay.classList.add('show');
-  heartbeat.play();
-  spawnConfetti();
-};
-closePopup.onclick=()=>overlay.classList.remove('show');
+users.push(user)
 
-function spawnHeart(){
-  const h=document.createElement('div');
-  h.className='floating-heart';h.textContent='💖';
-  h.style.left=Math.random()*100+'vw';
-  h.style.animationDuration=6+Math.random()*4+'s';
-  document.body.appendChild(h);
-  setTimeout(()=>h.remove(),9000);
+localStorage.setItem("users",JSON.stringify(users))
+
+alert("Registered Successfully")
+
 }
-setInterval(spawnHeart,700);
 
-function spawnConfetti(){
-  for(let i=0;i<40;i++){
-    const c=document.createElement('div');
-    c.textContent=['💖','💘','💞'][Math.floor(Math.random()*3)];
-    c.style.position='fixed';
-    c.style.left=Math.random()*100+'vw';
-    c.style.top='100vh';
-    c.style.fontSize=20+Math.random()*20+'px';
-    c.style.animation=`floatUp ${4+Math.random()*4}s linear forwards`;
-    document.body.appendChild(c);
-    setTimeout(()=>c.remove(),6000);
-  }
+/* LOGIN */
+
+function login(){
+
+let users=JSON.parse(localStorage.getItem("users"))||[]
+
+let user=users.find(u=>u.username===username.value && u.password===password.value)
+
+if(user){
+
+localStorage.setItem("currentUser",JSON.stringify(user))
+
+startDashboard(user)
+
+}else{
+alert("Invalid login")
 }
+
+}
+
+/* START DASHBOARD */
+
+function startDashboard(user){
+
+authPage.style.display="none"
+dashboard.style.display="block"
+
+if(user.role==="seller"){
+sellerPanel.style.display="block"
+}
+
+loadProperties()
+
+}
+
+/* AUTO LOGIN */
+
+window.onload=function(){
+
+let user=JSON.parse(localStorage.getItem("currentUser"))
+
+if(user){
+startDashboard(user)
+}
+
+}
+
+/* LOGOUT */
+
+function logout(){
+localStorage.removeItem("currentUser")
+location.reload()
+}
+
+/* ADD PROPERTY */
+
+function addProperty(){
+
+if(!image.files[0]){
+alert("Upload image")
+return
+}
+
+let list=JSON.parse(localStorage.getItem("properties"))||[]
+
+let img=URL.createObjectURL(image.files[0])
+let vid=video.files[0] ? URL.createObjectURL(video.files[0]) : ""
+
+let property={
+title:title.value,
+location:location.value,
+price:price.value,
+image:img,
+video:vid
+}
+
+list.push(property)
+
+localStorage.setItem("properties",JSON.stringify(list))
+
+loadProperties()
+
+}
+
+/* LOAD PROPERTY */
+
+function loadProperties(){
+
+let list=JSON.parse(localStorage.getItem("properties"))||[]
+
+propertyList.innerHTML=""
+
+list.forEach((p,i)=>{
+
+propertyList.innerHTML+=`
+
+<div class="card">
+
+<img src="${p.image}">
+
+<div class="card-body">
+
+<h3>${p.title}</h3>
+
+<p>${p.location}</p>
+
+<p class="price">₹ ${p.price}</p>
+
+<button class="btn" onclick="viewProperty(${i})">View</button>
+<button class="btn wishlist" onclick="addWishlist(${i})">❤</button>
+
+</div>
+
+</div>
+
+`
+
+})
+
+}
+
+/* VIEW PROPERTY */
+
+function viewProperty(i){
+
+let list=JSON.parse(localStorage.getItem("properties"))
+let p=list[i]
+
+modal.style.display="flex"
+
+modalContent.innerHTML=`
+
+<h2>${p.title}</h2>
+<img src="${p.image}" style="width:100%;margin-top:10px">
+
+${p.video?`<video controls width="100%" style="margin-top:10px">
+<source src="${p.video}">
+</video>`:""}
+
+<p>${p.location}</p>
+<p class="price">₹ ${p.price}</p>
+
+<button class="btn" onclick="closeModal()">Close</button>
+
+`
+
+}
+
+function closeModal(){
+modal.style.display="none"
+}
+
+/* WISHLIST */
+
+function addWishlist(i){
+
+let wish=JSON.parse(localStorage.getItem("wishlist"))||[]
+
+wish.push(i)
+
+localStorage.setItem("wishlist",JSON.stringify(wish))
+
+alert("Added to wishlist")
+
+}
+
+function showWishlist(){
+
+let wish=JSON.parse(localStorage.getItem("wishlist"))||[]
+let list=JSON.parse(localStorage.getItem("properties"))||[]
+
+propertyList.innerHTML=""
+
+wish.forEach(i=>{
+
+let p=list[i]
+
+propertyList.innerHTML+=`
+
+<div class="card">
+
+<img src="${p.image}">
+
+<div class="card-body">
+
+<h3>${p.title}</h3>
+<p>${p.location}</p>
+<p class="price">₹ ${p.price}</p>
+
+</div>
+
+</div>
+
+`
+
+})
+
+}
+
+/* SEARCH */
+
+function searchProperty(){
+
+let text=searchInput.value.toLowerCase()
+
+let list=JSON.parse(localStorage.getItem("properties"))||[]
+
+propertyList.innerHTML=""
+
+list.filter(p=>p.location.toLowerCase().includes(text))
+.forEach((p,i)=>{
+
+propertyList.innerHTML+=`
+
+<div class="card">
+
+<img src="${p.image}">
+
+<div class="card-body">
+
+<h3>${p.title}</h3>
+<p>${p.location}</p>
+<p class="price">₹ ${p.price}</p>
+
+<button class="btn" onclick="viewProperty(${i})">View</button>
+
+</div>
+
+</div>
+
+`
+
+})
+
+}
+
 </script>
+
 </body>
 </html>
