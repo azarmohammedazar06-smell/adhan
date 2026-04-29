@@ -1,567 +1,708 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>CoorgCare Property Market</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>QPaper Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
 <style>
+  :root {
+    --bg: #080c14;
+    --surface: #0f1623;
+    --surface2: #161d2e;
+    --border: rgba(255,255,255,0.07);
+    --accent: #4f8ef7;
+    --accent2: #a78bfa;
+    --accent3: #34d399;
+    --danger: #f87171;
+    --text: #e8eaf0;
+    --muted: #6b7a99;
+    --glass: rgba(255,255,255,0.04);
+    --glass-border: rgba(255,255,255,0.09);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; }
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Segoe UI;
-}
+  /* ── PAGES ── */
+  .page { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; overflow-y: auto; }
+  .page.active { opacity: 1; pointer-events: all; }
 
-body{
-background:#f2f4f7;
-}
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: ''; position: fixed; inset: 0; z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.4; pointer-events: none;
+  }
 
-/* SPLASH */
+  /* ══════════════════════════════
+       SPLASH SCREEN
+  ══════════════════════════════ */
+  #splash { z-index: 100; background: var(--bg); flex-direction: column; gap: 0; }
+  .splash-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(79,142,247,0.12) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 40% at 80% 80%, rgba(167,139,250,0.08) 0%, transparent 60%);
+  }
+  .splash-content { position: relative; z-index: 1; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 24px; }
+  .splash-icon {
+    width: 90px; height: 90px; border-radius: 24px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px; box-shadow: 0 0 60px rgba(79,142,247,0.35);
+    animation: pulse-glow 2.5s ease-in-out infinite;
+  }
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 40px rgba(79,142,247,0.3); }
+    50% { box-shadow: 0 0 80px rgba(79,142,247,0.6), 0 0 120px rgba(167,139,250,0.2); }
+  }
+  .splash-title { font-family: 'Syne', sans-serif; font-size: 52px; font-weight: 800; letter-spacing: -1px; }
+  .splash-title span { background: linear-gradient(90deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .splash-sub { color: var(--muted); font-size: 16px; font-weight: 300; letter-spacing: 0.5px; }
+  .splash-loader { width: 200px; height: 2px; background: var(--surface2); border-radius: 2px; overflow: hidden; margin-top: 12px; }
+  .splash-loader-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 2px; width: 0%; animation: load-bar 2.2s ease forwards; }
+  @keyframes load-bar { 0%{width:0%} 60%{width:75%} 85%{width:90%} 100%{width:100%} }
+  .splash-team { color: var(--muted); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; margin-top: 8px; }
 
-#splash{
-position:fixed;
-top:0;
-left:0;
-height:100vh;
-width:100%;
-background:linear-gradient(135deg,#004aad,#00c6ff);
-display:flex;
-align-items:center;
-justify-content:center;
-color:white;
-font-size:40px;
-font-weight:bold;
-animation:fadeOut 3s forwards;
-z-index:1000;
-}
+  /* ══════════════════════════════
+       AUTH PAGE
+  ══════════════════════════════ */
+  #auth { z-index: 10; align-items: center; justify-content: center; }
+  .auth-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 20% 50%, rgba(79,142,247,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 50% at 80% 50%, rgba(167,139,250,0.06) 0%, transparent 60%);
+  }
+  .auth-wrap { position: relative; z-index: 1; width: 100%; max-width: 440px; padding: 20px; }
+  .auth-logo { text-align: center; margin-bottom: 32px; }
+  .auth-logo-icon { display: inline-flex; width: 52px; height: 52px; border-radius: 14px; background: linear-gradient(135deg, var(--accent), var(--accent2)); align-items: center; justify-content: center; font-size: 24px; margin-bottom: 12px; }
+  .auth-logo h1 { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; }
+  .auth-logo h1 span { color: var(--accent); }
+  .auth-card {
+    background: var(--glass); backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border); border-radius: 20px;
+    padding: 36px 32px; box-shadow: 0 24px 80px rgba(0,0,0,0.4);
+  }
+  .tab-row { display: flex; gap: 8px; margin-bottom: 28px; background: var(--surface); border-radius: 12px; padding: 4px; }
+  .tab-btn { flex: 1; padding: 10px; border: none; border-radius: 9px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; background: transparent; color: var(--muted); transition: all 0.25s; }
+  .tab-btn.active { background: var(--surface2); color: var(--text); box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+  .role-row { display: flex; gap: 8px; margin-bottom: 20px; }
+  .role-btn { flex: 1; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; background: transparent; color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .role-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(79,142,247,0.08); }
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; font-size: 12px; font-weight: 500; color: var(--muted); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 8px; }
+  .form-group input {
+    width: 100%; padding: 13px 16px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px;
+    outline: none; transition: border 0.2s;
+  }
+  .form-group input:focus { border-color: var(--accent); }
+  .form-group input::placeholder { color: var(--muted); }
+  .auth-btn {
+    width: 100%; padding: 14px; background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none; border-radius: 10px; color: #fff; font-family: 'Syne', sans-serif;
+    font-size: 15px; font-weight: 700; cursor: pointer; letter-spacing: 0.3px;
+    transition: transform 0.15s, box-shadow 0.2s; margin-top: 8px;
+  }
+  .auth-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 30px rgba(79,142,247,0.35); }
+  .auth-btn:active { transform: translateY(0); }
+  .auth-footer { text-align: center; margin-top: 20px; font-size: 13px; color: var(--muted); }
+  .auth-footer a { color: var(--accent); text-decoration: none; font-weight: 500; cursor: pointer; }
 
-@keyframes fadeOut{
-0%{opacity:1}
-80%{opacity:1}
-100%{opacity:0;visibility:hidden}
-}
+  /* hidden form fields for animate */
+  .form-section { display: none; } .form-section.show { display: block; }
 
-/* HEADER */
+  /* ══════════════════════════════
+       SHARED NAV
+  ══════════════════════════════ */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    height: 64px; display: flex; align-items: center; justify-content: space-between;
+    padding: 0 28px;
+    background: rgba(8,12,20,0.8); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+  .nav-logo-dot { width: 8px; height: 8px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); }
+  .nav-logo span { color: var(--accent); }
+  .nav-right { display: flex; align-items: center; gap: 14px; }
+  .nav-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; cursor: pointer; }
+  .nav-name { font-size: 13px; color: var(--muted); }
+  .nav-logout { padding: 7px 14px; background: transparent; border: 1px solid var(--border); border-radius: 8px; color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; transition: all 0.2s; }
+  .nav-logout:hover { border-color: var(--danger); color: var(--danger); }
 
-header{
-background:white;
-padding:15px 30px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-box-shadow:0 3px 10px rgba(0,0,0,0.1);
-}
+  /* ══════════════════════════════
+       USER PAGE
+  ══════════════════════════════ */
+  #user-page { z-index: 5; flex-direction: column; align-items: flex-start; justify-content: flex-start; overflow-y: auto; padding-top: 64px; }
+  .user-inner { width: 100%; max-width: 1100px; margin: 0 auto; padding: 40px 28px 60px; }
+  .page-hero { margin-bottom: 36px; }
+  .page-hero h2 { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; margin-bottom: 6px; }
+  .page-hero p { color: var(--muted); font-size: 15px; }
+  .page-hero h2 .grad { background: linear-gradient(90deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .search-bar-wrap { display: flex; gap: 12px; margin-bottom: 28px; flex-wrap: wrap; }
+  .search-input-wrap { flex: 1; min-width: 220px; position: relative; }
+  .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 16px; }
+  .search-input { width: 100%; padding: 13px 16px 13px 42px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; transition: border 0.2s; }
+  .search-input:focus { border-color: var(--accent); }
+  .search-input::placeholder { color: var(--muted); }
+  .filter-select { padding: 13px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; cursor: pointer; min-width: 140px; }
+  .filter-select option { background: var(--surface); }
+  .search-btn { padding: 13px 22px; background: linear-gradient(135deg, var(--accent), var(--accent2)); border: none; border-radius: 12px; color: #fff; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; cursor: pointer; transition: box-shadow 0.2s; white-space: nowrap; }
+  .search-btn:hover { box-shadow: 0 6px 24px rgba(79,142,247,0.35); }
 
-.logo{
-font-size:24px;
-font-weight:bold;
-color:#004aad;
-}
+  /* stats row */
+  .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 32px; }
+  .stat-card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 14px; padding: 20px; }
+  .stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .stat-val { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; }
+  .stat-val.blue { color: var(--accent); }
+  .stat-val.purple { color: var(--accent2); }
+  .stat-val.green { color: var(--accent3); }
 
-nav button{
-padding:8px 14px;
-border:none;
-background:#004aad;
-color:white;
-border-radius:6px;
-cursor:pointer;
-}
+  /* papers grid */
+  .section-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .papers-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  .paper-card {
+    background: var(--glass); border: 1px solid var(--glass-border);
+    border-radius: 16px; padding: 22px; cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .paper-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2)); opacity: 0; transition: opacity 0.2s;
+  }
+  .paper-card:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(0,0,0,0.35); border-color: rgba(79,142,247,0.2); }
+  .paper-card:hover::before { opacity: 1; }
+  .paper-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+  .paper-subject { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; }
+  .paper-badge { font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 600; }
+  .badge-blue { background: rgba(79,142,247,0.15); color: var(--accent); }
+  .badge-purple { background: rgba(167,139,250,0.15); color: var(--accent2); }
+  .badge-green { background: rgba(52,211,153,0.15); color: var(--accent3); }
+  .paper-meta { color: var(--muted); font-size: 12px; margin-bottom: 14px; display: flex; gap: 12px; flex-wrap: wrap; }
+  .paper-meta span { display: flex; align-items: center; gap: 4px; }
+  .paper-actions { display: flex; gap: 8px; }
+  .btn-view, .btn-dl { padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.2s; border: none; }
+  .btn-view { background: rgba(79,142,247,0.12); color: var(--accent); }
+  .btn-view:hover { background: rgba(79,142,247,0.2); }
+  .btn-dl { background: rgba(52,211,153,0.12); color: var(--accent3); }
+  .btn-dl:hover { background: rgba(52,211,153,0.2); }
 
-/* LOGIN */
+  /* ══════════════════════════════
+       ADMIN PAGE
+  ══════════════════════════════ */
+  #admin-page { z-index: 5; flex-direction: column; align-items: flex-start; justify-content: flex-start; overflow-y: auto; padding-top: 64px; }
+  .admin-layout { display: grid; grid-template-columns: 220px 1fr; min-height: calc(100vh - 64px); width: 100%; }
 
-#authPage{
-display:flex;
-justify-content:center;
-align-items:center;
-height:80vh;
-}
+  /* sidebar */
+  .sidebar { background: var(--surface); border-right: 1px solid var(--border); padding: 24px 0; }
+  .sidebar-section { padding: 0 16px; margin-bottom: 8px; }
+  .sidebar-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; padding: 0 10px; margin-bottom: 6px; }
+  .sidebar-item { display: flex; align-items: center; gap: 10px; padding: 11px 10px; border-radius: 10px; font-size: 14px; color: var(--muted); cursor: pointer; transition: all 0.2s; }
+  .sidebar-item:hover { background: var(--glass); color: var(--text); }
+  .sidebar-item.active { background: rgba(79,142,247,0.1); color: var(--accent); font-weight: 500; }
+  .sidebar-item-icon { font-size: 16px; }
 
-.authBox{
-background:white;
-padding:30px;
-width:350px;
-border-radius:10px;
-box-shadow:0 10px 30px rgba(0,0,0,0.1);
-}
+  /* admin main */
+  .admin-main { padding: 36px 32px; overflow-y: auto; }
+  .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+  .admin-header h2 { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; }
+  .admin-header p { color: var(--muted); font-size: 14px; }
+  .add-btn { padding: 12px 22px; background: linear-gradient(135deg, var(--accent), var(--accent2)); border: none; border-radius: 10px; color: #fff; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: box-shadow 0.2s; }
+  .add-btn:hover { box-shadow: 0 6px 24px rgba(79,142,247,0.35); }
 
-.authBox input,select{
-width:100%;
-margin:8px 0;
-padding:10px;
-border:1px solid #ddd;
-border-radius:6px;
-}
+  .admin-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; margin-bottom: 28px; }
+  .a-stat { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 14px; padding: 18px; }
+  .a-stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .a-stat-val { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; }
 
-.authBox button{
-width:100%;
-padding:10px;
-background:#004aad;
-color:white;
-border:none;
-margin-top:10px;
-border-radius:6px;
-}
+  /* upload form */
+  .upload-form { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 18px; padding: 28px; margin-bottom: 28px; display: none; }
+  .upload-form.open { display: block; animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+  .upload-form h3 { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 20px; }
+  .upload-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .upload-grid .form-group { margin-bottom: 0; }
+  .upload-grid .full { grid-column: 1 / -1; }
+  .drop-zone { border: 2px dashed var(--border); border-radius: 12px; padding: 32px; text-align: center; cursor: pointer; transition: border-color 0.2s; }
+  .drop-zone:hover { border-color: var(--accent); }
+  .drop-zone-icon { font-size: 32px; margin-bottom: 10px; }
+  .drop-zone-text { color: var(--muted); font-size: 14px; }
+  .drop-zone-text span { color: var(--accent); }
+  .upload-submit { margin-top: 20px; padding: 13px 28px; background: linear-gradient(135deg, var(--accent), var(--accent2)); border: none; border-radius: 10px; color: #fff; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; cursor: pointer; }
 
-/* DASHBOARD */
+  /* table */
+  .table-wrap { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 18px; overflow: hidden; }
+  .table-head { padding: 18px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .table-head h3 { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; }
+  .table-search { padding: 9px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; outline: none; width: 200px; }
+  table { width: 100%; border-collapse: collapse; }
+  th { padding: 14px 24px; text-align: left; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; border-bottom: 1px solid var(--border); }
+  td { padding: 16px 24px; font-size: 14px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .action-btns { display: flex; gap: 6px; }
+  .btn-edit { padding: 6px 12px; background: rgba(167,139,250,0.12); color: var(--accent2); border: none; border-radius: 7px; font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+  .btn-del { padding: 6px 12px; background: rgba(248,113,113,0.12); color: var(--danger); border: none; border-radius: 7px; font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+  .btn-edit:hover { background: rgba(167,139,250,0.2); }
+  .btn-del:hover { background: rgba(248,113,113,0.2); }
+  .status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; }
+  .dot-green { background: var(--accent3); }
+  .dot-yellow { background: #fbbf24; }
 
-#dashboard{
-display:none;
-padding:20px;
-}
+  /* MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.25s; backdrop-filter: blur(4px); }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal { background: var(--surface); border: 1px solid var(--glass-border); border-radius: 20px; padding: 36px 32px; max-width: 480px; width: 90%; box-shadow: 0 32px 100px rgba(0,0,0,0.6); }
+  .modal h3 { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+  .modal .sub { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+  .modal-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .meta-item label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; }
+  .meta-item p { font-size: 14px; margin-top: 4px; font-weight: 500; }
+  .modal-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; }
+  .modal .auth-btn { margin-top: 4px; }
 
-/* SEARCH */
+  /* TOAST */
+  .toast { position: fixed; bottom: 28px; right: 28px; z-index: 300; padding: 14px 20px; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; font-size: 14px; display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 32px rgba(0,0,0,0.4); transform: translateY(80px); opacity: 0; transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1); }
+  .toast.show { transform: none; opacity: 1; }
+  .toast.success .ti { color: var(--accent3); }
+  .toast.error .ti { color: var(--danger); }
 
-.searchBar{
-display:flex;
-gap:10px;
-margin-bottom:20px;
-}
-
-.searchBar input{
-flex:1;
-padding:10px;
-border-radius:6px;
-border:1px solid #ccc;
-}
-
-/* GRID */
-
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-gap:20px;
-}
-
-/* PROPERTY CARD */
-
-.card{
-background:white;
-border-radius:10px;
-overflow:hidden;
-box-shadow:0 5px 15px rgba(0,0,0,0.1);
-transition:0.3s;
-}
-
-.card:hover{
-transform:translateY(-5px);
-}
-
-.card img{
-width:100%;
-height:180px;
-object-fit:cover;
-}
-
-.card-body{
-padding:15px;
-}
-
-.price{
-color:#00a65a;
-font-weight:bold;
-}
-
-.btn{
-padding:8px 12px;
-border:none;
-border-radius:6px;
-background:#004aad;
-color:white;
-margin-top:8px;
-cursor:pointer;
-}
-
-.wishlist{
-background:#ff4b5c;
-}
-
-/* SELLER PANEL */
-
-#sellerPanel{
-margin-top:20px;
-background:white;
-padding:20px;
-border-radius:10px;
-display:none;
-}
-
-#sellerPanel input{
-width:100%;
-margin:8px 0;
-padding:10px;
-border:1px solid #ddd;
-border-radius:6px;
-}
-
-/* MODAL */
-
-.modal{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.5);
-display:none;
-align-items:center;
-justify-content:center;
-}
-
-.modal-content{
-background:white;
-padding:20px;
-border-radius:10px;
-width:400px;
-}
-
+  /* RESPONSIVE */
+  @media (max-width: 720px) {
+    .admin-layout { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .upload-grid { grid-template-columns: 1fr; }
+    th:nth-child(4), td:nth-child(4), th:nth-child(3), td:nth-child(3) { display: none; }
+    .splash-title { font-size: 36px; }
+  }
 </style>
 </head>
-
 <body>
 
-<div id="splash">CoorgCare Property</div>
-
-<header>
-<div class="logo">CoorgCare</div>
-<nav>
-<button onclick="logout()">Logout</button>
-</nav>
-</header>
-
-<!-- LOGIN -->
-
-<div id="authPage">
-
-<div class="authBox">
-
-<h2>Login / Register</h2>
-
-<input id="username" placeholder="Username">
-<input id="password" type="password" placeholder="Password">
-
-<select id="role">
-<option value="buyer">Buyer</option>
-<option value="seller">Seller</option>
-</select>
-
-<button onclick="register()">Register</button>
-<button onclick="login()">Login</button>
-
+<!-- ══ SPLASH ══ -->
+<div class="page active" id="splash">
+  <div class="splash-bg"></div>
+  <div class="splash-content">
+    <div class="splash-icon">📄</div>
+    <div>
+      <div class="splash-title">Q<span>Paper</span> Hub</div>
+      <div class="splash-sub">Question Paper Uploading & Viewing Portal</div>
+    </div>
+    <div>
+      <div class="splash-loader"><div class="splash-loader-fill"></div></div>
+    </div>
+    <div class="splash-team">Built by Sampreeth · Joel · Tharun · Hrithik</div>
+  </div>
 </div>
 
+<!-- ══ AUTH ══ -->
+<div class="page" id="auth">
+  <div class="auth-bg"></div>
+  <div class="auth-wrap">
+    <div class="auth-logo">
+      <div class="auth-logo-icon">📄</div>
+      <h1>Q<span>Paper</span> Hub</h1>
+    </div>
+    <div class="auth-card">
+      <!-- Tab -->
+      <div class="tab-row">
+        <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">Login</button>
+        <button class="tab-btn" id="tab-signup" onclick="switchTab('signup')">Sign Up</button>
+      </div>
+      <!-- Role -->
+      <div class="role-row">
+        <button class="role-btn active" id="role-user" onclick="switchRole('user')">👤 Student</button>
+        <button class="role-btn" id="role-admin" onclick="switchRole('admin')">🛡️ Admin</button>
+      </div>
+      <!-- Login Form -->
+      <div class="form-section show" id="login-form">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="login-email" placeholder="you@college.edu" />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="login-pass" placeholder="••••••••" />
+        </div>
+        <button class="auth-btn" onclick="doLogin()">Login →</button>
+      </div>
+      <!-- Signup Form -->
+      <div class="form-section" id="signup-form">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" placeholder="Your name" />
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" placeholder="you@college.edu" />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" placeholder="Choose a password" />
+        </div>
+        <button class="auth-btn" onclick="doSignup()">Create Account →</button>
+      </div>
+      <div class="auth-footer" id="auth-switch">
+        Don't have an account? <a onclick="switchTab('signup')">Sign up</a>
+      </div>
+    </div>
+  </div>
 </div>
 
-<!-- DASHBOARD -->
-
-<div id="dashboard">
-
-<div class="searchBar">
-<input id="searchInput" placeholder="Search property location..." onkeyup="searchProperty()">
-<button class="btn" onclick="showWishlist()">Wishlist</button>
+<!-- ══ USER PAGE ══ -->
+<div class="page" id="user-page">
+  <nav class="nav">
+    <div class="nav-logo"><div class="nav-logo-dot"></div>Q<span>Paper</span> Hub</div>
+    <div class="nav-right">
+      <span class="nav-name" id="user-name-nav">Student</span>
+      <div class="nav-avatar" id="user-avatar">S</div>
+      <button class="nav-logout" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+  <div class="user-inner">
+    <div class="page-hero">
+      <h2>Find <span class="grad">Question Papers</span></h2>
+      <p>Browse and download previous year papers by subject, course & year.</p>
+    </div>
+    <!-- Search -->
+    <div class="search-bar-wrap">
+      <div class="search-input-wrap">
+        <span class="search-icon">🔍</span>
+        <input class="search-input" placeholder="Search by subject, code..." oninput="filterPapers()" id="user-search"/>
+      </div>
+      <select class="filter-select" id="filter-year" onchange="filterPapers()">
+        <option value="">All Years</option>
+        <option>2024</option><option>2023</option><option>2022</option><option>2021</option>
+      </select>
+      <select class="filter-select" id="filter-course" onchange="filterPapers()">
+        <option value="">All Courses</option>
+        <option>B.Tech</option><option>BCA</option><option>MCA</option><option>MBA</option>
+      </select>
+      <button class="search-btn" onclick="filterPapers()">Search</button>
+    </div>
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-label">Total Papers</div><div class="stat-val blue">142</div></div>
+      <div class="stat-card"><div class="stat-label">Subjects</div><div class="stat-val purple">38</div></div>
+      <div class="stat-card"><div class="stat-label">Courses</div><div class="stat-val green">6</div></div>
+      <div class="stat-card"><div class="stat-label">Downloads</div><div class="stat-val blue">4.2K</div></div>
+    </div>
+    <!-- Papers -->
+    <div class="section-title">Recent Papers</div>
+    <div class="papers-grid" id="papers-grid"></div>
+  </div>
 </div>
 
-<div class="grid" id="propertyList"></div>
+<!-- ══ ADMIN PAGE ══ -->
+<div class="page" id="admin-page">
+  <nav class="nav">
+    <div class="nav-logo"><div class="nav-logo-dot"></div>Q<span>Paper</span> Hub <span style="font-size:11px;background:rgba(167,139,250,0.15);color:var(--accent2);padding:3px 8px;border-radius:20px;margin-left:8px;font-family:'DM Sans';font-weight:500;">Admin</span></div>
+    <div class="nav-right">
+      <span class="nav-name">Administrator</span>
+      <div class="nav-avatar" style="background:linear-gradient(135deg,var(--accent2),var(--accent));">A</div>
+      <button class="nav-logout" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Menu</div>
+        <div class="sidebar-item active" onclick="adminNav(this)"><span class="sidebar-item-icon">📋</span> Dashboard</div>
+        <div class="sidebar-item" onclick="adminNav(this)"><span class="sidebar-item-icon">📤</span> Upload Papers</div>
+        <div class="sidebar-item" onclick="adminNav(this)"><span class="sidebar-item-icon">📁</span> All Papers</div>
+        <div class="sidebar-item" onclick="adminNav(this)"><span class="sidebar-item-icon">👥</span> Users</div>
+      </div>
+      <div class="sidebar-section" style="margin-top:16px;">
+        <div class="sidebar-label">Settings</div>
+        <div class="sidebar-item" onclick="adminNav(this)"><span class="sidebar-item-icon">⚙️</span> Settings</div>
+        <div class="sidebar-item" onclick="logout()"><span class="sidebar-item-icon">🚪</span> Logout</div>
+      </div>
+    </div>
+    <!-- Main -->
+    <div class="admin-main">
+      <div class="admin-header">
+        <div>
+          <h2>Admin Dashboard</h2>
+          <p>Manage question papers and users.</p>
+        </div>
+        <button class="add-btn" onclick="toggleUploadForm()">＋ Upload Paper</button>
+      </div>
+      <!-- Stats -->
+      <div class="admin-stats">
+        <div class="a-stat"><div class="a-stat-label">Total Papers</div><div class="a-stat-val" style="color:var(--accent)">142</div></div>
+        <div class="a-stat"><div class="a-stat-label">Students</div><div class="a-stat-val" style="color:var(--accent2)">891</div></div>
+        <div class="a-stat"><div class="a-stat-label">Downloads</div><div class="a-stat-val" style="color:var(--accent3)">4.2K</div></div>
+        <div class="a-stat"><div class="a-stat-label">Subjects</div><div class="a-stat-val">38</div></div>
+      </div>
 
-<div id="sellerPanel">
+      <!-- Upload Form -->
+      <div class="upload-form" id="upload-form">
+        <h3>📤 Upload New Question Paper</h3>
+        <div class="upload-grid">
+          <div class="form-group"><label>Subject Name</label><input class="search-input" style="padding:13px 16px;" placeholder="e.g. Data Structures" id="up-subject"/></div>
+          <div class="form-group"><label>Subject Code</label><input class="search-input" style="padding:13px 16px;" placeholder="e.g. CS301" id="up-code"/></div>
+          <div class="form-group"><label>Course</label>
+            <select class="filter-select" style="width:100%;" id="up-course">
+              <option>B.Tech</option><option>BCA</option><option>MCA</option><option>MBA</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Year</label>
+            <select class="filter-select" style="width:100%;" id="up-year">
+              <option>2024</option><option>2023</option><option>2022</option><option>2021</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label>Question Paper File</label>
+            <div class="drop-zone" onclick="document.getElementById('file-input').click()">
+              <div class="drop-zone-icon">📂</div>
+              <div class="drop-zone-text">Drag & drop or <span>click to browse</span> · PDF, DOCX up to 20MB</div>
+              <input type="file" id="file-input" style="display:none;" accept=".pdf,.docx"/>
+            </div>
+          </div>
+        </div>
+        <button class="upload-submit" onclick="adminUpload()">Upload Paper</button>
+        <button onclick="toggleUploadForm()" style="margin-left:12px;padding:13px 20px;background:transparent;border:1px solid var(--border);border-radius:10px;color:var(--muted);font-family:'DM Sans';cursor:pointer;">Cancel</button>
+      </div>
 
-<h3>Add Property</h3>
-
-<input id="title" placeholder="Property Title">
-<input id="location" placeholder="Location">
-<input id="price" placeholder="Price">
-<input type="file" id="image">
-<input type="file" id="video">
-
-<button class="btn" onclick="addProperty()">Add Property</button>
-
+      <!-- Table -->
+      <div class="table-wrap">
+        <div class="table-head">
+          <h3>Question Papers</h3>
+          <input class="table-search" placeholder="🔍 Filter..." oninput="filterTable(this.value)"/>
+        </div>
+        <div style="overflow-x:auto;">
+          <table id="admin-table">
+            <thead>
+              <tr>
+                <th>Subject</th>
+                <th>Code</th>
+                <th>Course</th>
+                <th>Year</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="admin-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
+<!-- PAPER MODAL -->
+<div class="modal-overlay" id="paper-modal" onclick="closePaperModal(event)">
+  <div class="modal" style="position:relative;">
+    <button class="modal-close" onclick="document.getElementById('paper-modal').classList.remove('open')">✕</button>
+    <h3 id="modal-title">Subject Name</h3>
+    <div class="sub" id="modal-code">Code · Course</div>
+    <div class="modal-meta">
+      <div class="meta-item"><label>Year</label><p id="modal-year">—</p></div>
+      <div class="meta-item"><label>Course</label><p id="modal-course">—</p></div>
+      <div class="meta-item"><label>Uploaded</label><p id="modal-date">—</p></div>
+      <div class="meta-item"><label>Downloads</label><p id="modal-dl">—</p></div>
+    </div>
+    <button class="auth-btn" onclick="showToast('Download started!','success');document.getElementById('paper-modal').classList.remove('open')">⬇ Download Paper</button>
+  </div>
 </div>
 
-<div class="modal" id="modal">
-<div class="modal-content" id="modalContent"></div>
-</div>
+<!-- TOAST -->
+<div class="toast" id="toast"><span class="ti" id="toast-icon">✓</span><span id="toast-msg"></span></div>
 
 <script>
+// ── DATA ──
+const PAPERS = [
+  {subject:"Data Structures",code:"CS301",course:"B.Tech",year:"2024",badge:"badge-blue",uploads:"Jan 2024",dl:320},
+  {subject:"Operating Systems",code:"CS401",course:"B.Tech",year:"2023",badge:"badge-purple",uploads:"Mar 2023",dl:210},
+  {subject:"Database Management",code:"CS302",course:"BCA",year:"2024",badge:"badge-green",uploads:"Feb 2024",dl:185},
+  {subject:"Computer Networks",code:"CS501",course:"B.Tech",year:"2023",badge:"badge-blue",uploads:"Apr 2023",dl:270},
+  {subject:"Software Engineering",code:"CS601",course:"MCA",year:"2022",badge:"badge-purple",uploads:"Dec 2022",dl:145},
+  {subject:"Machine Learning",code:"CS702",course:"MCA",year:"2024",badge:"badge-green",uploads:"Jan 2024",dl:390},
+  {subject:"Web Technologies",code:"CS303",course:"BCA",year:"2023",badge:"badge-blue",uploads:"May 2023",dl:167},
+  {subject:"Digital Electronics",code:"EC201",course:"B.Tech",year:"2022",badge:"badge-purple",uploads:"Nov 2022",dl:98},
+];
 
-/* ELEMENTS */
+let allPapers = [...PAPERS];
 
-const username=document.getElementById("username")
-const password=document.getElementById("password")
-const role=document.getElementById("role")
+// ── SPLASH → AUTH ──
+setTimeout(() => { navigate('splash', 'auth'); }, 2600);
 
-const authPage=document.getElementById("authPage")
-const dashboard=document.getElementById("dashboard")
-const sellerPanel=document.getElementById("sellerPanel")
-
-const propertyList=document.getElementById("propertyList")
-const modal=document.getElementById("modal")
-const modalContent=document.getElementById("modalContent")
-
-/* REGISTER */
-
-function register(){
-
-if(!username.value || !password.value){
-alert("Enter username and password")
-return
+// ── NAVIGATION ──
+function navigate(from, to) {
+  document.getElementById(from).classList.remove('active');
+  document.getElementById(to).classList.add('active');
+}
+function showPage(to) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(to).classList.add('active');
 }
 
-let users=JSON.parse(localStorage.getItem("users"))||[]
+// ── AUTH ──
+let currentRole = 'user';
+let currentTab = 'login';
 
-let user={
-username:username.value,
-password:password.value,
-role:role.value
+function switchTab(tab) {
+  currentTab = tab;
+  document.getElementById('login-form').classList.toggle('show', tab === 'login');
+  document.getElementById('signup-form').classList.toggle('show', tab === 'signup');
+  document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+  document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
+  const sw = document.getElementById('auth-switch');
+  sw.innerHTML = tab === 'login'
+    ? `Don't have an account? <a onclick="switchTab('signup')">Sign up</a>`
+    : `Already have an account? <a onclick="switchTab('login')">Login</a>`;
 }
 
-users.push(user)
-
-localStorage.setItem("users",JSON.stringify(users))
-
-alert("Registered Successfully")
-
+function switchRole(role) {
+  currentRole = role;
+  document.getElementById('role-user').classList.toggle('active', role === 'user');
+  document.getElementById('role-admin').classList.toggle('active', role === 'admin');
 }
 
-/* LOGIN */
-
-function login(){
-
-let users=JSON.parse(localStorage.getItem("users"))||[]
-
-let user=users.find(u=>u.username===username.value && u.password===password.value)
-
-if(user){
-
-localStorage.setItem("currentUser",JSON.stringify(user))
-
-startDashboard(user)
-
-}else{
-alert("Invalid login")
+function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass = document.getElementById('login-pass').value;
+  if (!email || !pass) { showToast('Please fill all fields','error'); return; }
+  showToast('Welcome back! 👋', 'success');
+  setTimeout(() => {
+    if (currentRole === 'admin') {
+      showPage('admin-page');
+      renderAdminTable(allPapers);
+    } else {
+      const name = email.split('@')[0];
+      document.getElementById('user-name-nav').textContent = name;
+      document.getElementById('user-avatar').textContent = name[0].toUpperCase();
+      showPage('user-page');
+      renderPapers(allPapers);
+    }
+  }, 600);
 }
 
+function doSignup() {
+  showToast('Account created! Please login.', 'success');
+  setTimeout(() => switchTab('login'), 800);
 }
 
-/* START DASHBOARD */
-
-function startDashboard(user){
-
-authPage.style.display="none"
-dashboard.style.display="block"
-
-if(user.role==="seller"){
-sellerPanel.style.display="block"
+function logout() {
+  showToast('Logged out successfully.', 'success');
+  setTimeout(() => showPage('auth'), 600);
 }
 
-loadProperties()
-
+// ── PAPERS ──
+function renderPapers(list) {
+  const grid = document.getElementById('papers-grid');
+  if (!list.length) { grid.innerHTML = '<p style="color:var(--muted);grid-column:1/-1;">No papers found.</p>'; return; }
+  grid.innerHTML = list.map((p,i) => `
+    <div class="paper-card" style="animation-delay:${i*0.05}s" onclick="openPaperModal(${i})">
+      <div class="paper-card-header">
+        <div class="paper-subject">${p.subject}</div>
+        <span class="paper-badge ${p.badge}">${p.year}</span>
+      </div>
+      <div class="paper-meta">
+        <span>📘 ${p.code}</span>
+        <span>🎓 ${p.course}</span>
+        <span>⬇ ${p.dl}</span>
+      </div>
+      <div class="paper-actions">
+        <button class="btn-view" onclick="event.stopPropagation();openPaperModal(${i})">👁 View</button>
+        <button class="btn-dl" onclick="event.stopPropagation();showToast('Download started!','success')">⬇ Download</button>
+      </div>
+    </div>`).join('');
 }
 
-/* AUTO LOGIN */
-
-window.onload=function(){
-
-let user=JSON.parse(localStorage.getItem("currentUser"))
-
-if(user){
-startDashboard(user)
+function filterPapers() {
+  const q = document.getElementById('user-search').value.toLowerCase();
+  const yr = document.getElementById('filter-year').value;
+  const cr = document.getElementById('filter-course').value;
+  const res = allPapers.filter(p =>
+    (p.subject.toLowerCase().includes(q) || p.code.toLowerCase().includes(q)) &&
+    (!yr || p.year === yr) &&
+    (!cr || p.course === cr)
+  );
+  renderPapers(res);
 }
 
+function openPaperModal(i) {
+  const p = allPapers[i];
+  document.getElementById('modal-title').textContent = p.subject;
+  document.getElementById('modal-code').textContent = `${p.code} · ${p.course}`;
+  document.getElementById('modal-year').textContent = p.year;
+  document.getElementById('modal-course').textContent = p.course;
+  document.getElementById('modal-date').textContent = p.uploads;
+  document.getElementById('modal-dl').textContent = p.dl;
+  document.getElementById('paper-modal').classList.add('open');
 }
 
-/* LOGOUT */
-
-function logout(){
-localStorage.removeItem("currentUser")
-location.reload()
+function closePaperModal(e) {
+  if (e.target.id === 'paper-modal') document.getElementById('paper-modal').classList.remove('open');
 }
 
-/* ADD PROPERTY */
-
-function addProperty(){
-
-if(!image.files[0]){
-alert("Upload image")
-return
+// ── ADMIN ──
+function renderAdminTable(list) {
+  const tbody = document.getElementById('admin-tbody');
+  tbody.innerHTML = list.map((p,i) => `
+    <tr>
+      <td><strong>${p.subject}</strong></td>
+      <td><span style="color:var(--muted);font-size:13px;">${p.code}</span></td>
+      <td>${p.course}</td>
+      <td>${p.year}</td>
+      <td><span class="status-dot dot-green"></span>Active</td>
+      <td>
+        <div class="action-btns">
+          <button class="btn-edit" onclick="showToast('Edit coming with backend!','success')">Edit</button>
+          <button class="btn-del" onclick="deleteRow(${i})">Delete</button>
+        </div>
+      </td>
+    </tr>`).join('');
 }
 
-let list=JSON.parse(localStorage.getItem("properties"))||[]
-
-let img=URL.createObjectURL(image.files[0])
-let vid=video.files[0] ? URL.createObjectURL(video.files[0]) : ""
-
-let property={
-title:title.value,
-location:location.value,
-price:price.value,
-image:img,
-video:vid
+function filterTable(q) {
+  const rows = document.querySelectorAll('#admin-tbody tr');
+  rows.forEach(r => { r.style.display = r.textContent.toLowerCase().includes(q.toLowerCase()) ? '' : 'none'; });
 }
 
-list.push(property)
-
-localStorage.setItem("properties",JSON.stringify(list))
-
-loadProperties()
-
+function deleteRow(i) {
+  allPapers.splice(i, 1);
+  renderAdminTable(allPapers);
+  showToast('Paper deleted.', 'error');
 }
 
-/* LOAD PROPERTY */
-
-function loadProperties(){
-
-let list=JSON.parse(localStorage.getItem("properties"))||[]
-
-propertyList.innerHTML=""
-
-list.forEach((p,i)=>{
-
-propertyList.innerHTML+=`
-
-<div class="card">
-
-<img src="${p.image}">
-
-<div class="card-body">
-
-<h3>${p.title}</h3>
-
-<p>${p.location}</p>
-
-<p class="price">₹ ${p.price}</p>
-
-<button class="btn" onclick="viewProperty(${i})">View</button>
-<button class="btn wishlist" onclick="addWishlist(${i})">❤</button>
-
-</div>
-
-</div>
-
-`
-
-})
-
+function toggleUploadForm() {
+  document.getElementById('upload-form').classList.toggle('open');
 }
 
-/* VIEW PROPERTY */
-
-function viewProperty(i){
-
-let list=JSON.parse(localStorage.getItem("properties"))
-let p=list[i]
-
-modal.style.display="flex"
-
-modalContent.innerHTML=`
-
-<h2>${p.title}</h2>
-<img src="${p.image}" style="width:100%;margin-top:10px">
-
-${p.video?`<video controls width="100%" style="margin-top:10px">
-<source src="${p.video}">
-</video>`:""}
-
-<p>${p.location}</p>
-<p class="price">₹ ${p.price}</p>
-
-<button class="btn" onclick="closeModal()">Close</button>
-
-`
-
+function adminUpload() {
+  const subj = document.getElementById('up-subject').value.trim();
+  const code = document.getElementById('up-code').value.trim();
+  const course = document.getElementById('up-course').value;
+  const year = document.getElementById('up-year').value;
+  if (!subj || !code) { showToast('Fill in subject & code!', 'error'); return; }
+  const badges = ['badge-blue','badge-purple','badge-green'];
+  allPapers.unshift({ subject: subj, code, course, year, badge: badges[Math.floor(Math.random()*3)], uploads: 'Just now', dl: 0 });
+  renderAdminTable(allPapers);
+  toggleUploadForm();
+  document.getElementById('up-subject').value = '';
+  document.getElementById('up-code').value = '';
+  showToast('Paper uploaded successfully! 🎉', 'success');
 }
 
-function closeModal(){
-modal.style.display="none"
+function adminNav(el) {
+  document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
 }
 
-/* WISHLIST */
-
-function addWishlist(i){
-
-let wish=JSON.parse(localStorage.getItem("wishlist"))||[]
-
-wish.push(i)
-
-localStorage.setItem("wishlist",JSON.stringify(wish))
-
-alert("Added to wishlist")
-
+// ── TOAST ──
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  document.getElementById('toast-icon').textContent = type === 'success' ? '✓' : '✕';
+  t.className = `toast ${type} show`;
+  setTimeout(() => t.classList.remove('show'), 3000);
 }
-
-function showWishlist(){
-
-let wish=JSON.parse(localStorage.getItem("wishlist"))||[]
-let list=JSON.parse(localStorage.getItem("properties"))||[]
-
-propertyList.innerHTML=""
-
-wish.forEach(i=>{
-
-let p=list[i]
-
-propertyList.innerHTML+=`
-
-<div class="card">
-
-<img src="${p.image}">
-
-<div class="card-body">
-
-<h3>${p.title}</h3>
-<p>${p.location}</p>
-<p class="price">₹ ${p.price}</p>
-
-</div>
-
-</div>
-
-`
-
-})
-
-}
-
-/* SEARCH */
-
-function searchProperty(){
-
-let text=searchInput.value.toLowerCase()
-
-let list=JSON.parse(localStorage.getItem("properties"))||[]
-
-propertyList.innerHTML=""
-
-list.filter(p=>p.location.toLowerCase().includes(text))
-.forEach((p,i)=>{
-
-propertyList.innerHTML+=`
-
-<div class="card">
-
-<img src="${p.image}">
-
-<div class="card-body">
-
-<h3>${p.title}</h3>
-<p>${p.location}</p>
-<p class="price">₹ ${p.price}</p>
-
-<button class="btn" onclick="viewProperty(${i})">View</button>
-
-</div>
-
-</div>
-
-`
-
-})
-
-}
-
 </script>
-
 </body>
 </html>
