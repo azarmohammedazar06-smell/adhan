@@ -1,10 +1,11 @@
+html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>QPaper Hub</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+<link href="htt...ap" rel="stylesheet"/>
 <style>
   :root {
     --bg: #080c14;
@@ -150,6 +151,15 @@
   .search-btn { padding: 13px 22px; background: linear-gradient(135deg, var(--accent), var(--accent2)); border: none; border-radius: 12px; color: #fff; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; cursor: pointer; transition: box-shadow 0.2s; white-space: nowrap; }
   .search-btn:hover { box-shadow: 0 6px 24px rgba(79,142,247,0.35); }
 
+  /* AI Search Option */
+  .ai-search-btn {
+    padding: 13px 22px; background: transparent; border: 1px solid var(--accent2);
+    border-radius: 12px; color: var(--accent2); font-family: 'Syne', sans-serif;
+    font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s;
+    white-space: nowrap; display: flex; align-items: center; gap: 8px;
+  }
+  .ai-search-btn:hover { background: rgba(167,139,250,0.1); box-shadow: 0 4px 16px rgba(167,139,250,0.2); }
+
   /* stats row */
   .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 32px; }
   .stat-card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 14px; padding: 20px; }
@@ -184,11 +194,13 @@
   .paper-meta { color: var(--muted); font-size: 12px; margin-bottom: 14px; display: flex; gap: 12px; flex-wrap: wrap; }
   .paper-meta span { display: flex; align-items: center; gap: 4px; }
   .paper-actions { display: flex; gap: 8px; }
-  .btn-view, .btn-dl { padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.2s; border: none; }
+  .btn-view, .btn-dl, .btn-ai { padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.2s; border: none; }
   .btn-view { background: rgba(79,142,247,0.12); color: var(--accent); }
   .btn-view:hover { background: rgba(79,142,247,0.2); }
   .btn-dl { background: rgba(52,211,153,0.12); color: var(--accent3); }
   .btn-dl:hover { background: rgba(52,211,153,0.2); }
+  .btn-ai { background: rgba(167,139,250,0.12); color: var(--accent2); }
+  .btn-ai:hover { background: rgba(167,139,250,0.2); }
 
   /* ══════════════════════════════
        ADMIN PAGE
@@ -252,6 +264,221 @@
   .dot-green { background: var(--accent3); }
   .dot-yellow { background: #fbbf24; }
 
+  /* ══════════════════════════════
+       FLOATING AI CHAT
+  ══════════════════════════════ */
+  .ai-chat-widget {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .ai-chat-bubble {
+    width: 360px;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    display: none;
+    flex-direction: column;
+    animation: slideUp 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  }
+
+  .ai-chat-bubble.open { display: flex; }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .ai-chat-header {
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .ai-chat-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+  }
+
+  .ai-chat-close {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+
+  .ai-chat-close:hover { transform: scale(1.1); }
+
+  .ai-chat-content {
+    padding: 16px;
+    height: 320px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .ai-message {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    animation: fadeInMsg 0.3s ease;
+  }
+
+  @keyframes fadeInMsg {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .ai-message.bot {
+    justify-content: flex-start;
+  }
+
+  .ai-message.user {
+    justify-content: flex-end;
+  }
+
+  .ai-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .ai-avatar.bot {
+    background: rgba(167,139,250,0.2);
+  }
+
+  .ai-avatar.user {
+    background: rgba(79,142,247,0.2);
+  }
+
+  .ai-msg-text {
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.5;
+    max-width: 240px;
+    word-wrap: break-word;
+  }
+
+  .ai-message.bot .ai-msg-text {
+    background: var(--surface);
+    color: var(--text);
+  }
+
+  .ai-message.user .ai-msg-text {
+    background: rgba(79,142,247,0.2);
+    color: var(--accent);
+  }
+
+  .ai-chat-input-area {
+    padding: 12px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+  }
+
+  .ai-chat-input {
+    flex: 1;
+    padding: 10px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    outline: none;
+    transition: border 0.2s;
+  }
+
+  .ai-chat-input:focus {
+    border-color: var(--accent2);
+  }
+
+  .ai-chat-input::placeholder {
+    color: var(--muted);
+  }
+
+  .ai-chat-send {
+    padding: 10px 14px;
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+
+  .ai-chat-send:hover {
+    transform: scale(1.05);
+  }
+
+  .ai-chat-send:active {
+    transform: scale(0.95);
+  }
+
+  .ai-fab {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 28px rgba(167,139,250,0.4);
+    transition: all 0.3s;
+  }
+
+  .ai-fab:hover {
+    transform: scale(1.1);
+    box-shadow: 0 12px 40px rgba(167,139,250,0.6);
+  }
+
+  .ai-fab.active {
+    transform: rotate(-45deg);
+  }
+
   /* MODAL */
   .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.25s; backdrop-filter: blur(4px); }
   .modal-overlay.open { opacity: 1; pointer-events: all; }
@@ -263,6 +490,84 @@
   .meta-item p { font-size: 14px; margin-top: 4px; font-weight: 500; }
   .modal-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; }
   .modal .auth-btn { margin-top: 4px; }
+
+  /* AI Paper Modal */
+  .ai-paper-modal {
+    max-width: 620px;
+  }
+
+  .ai-paper-modal .modal-meta {
+    grid-template-columns: 1fr 1fr 1fr;
+    margin-bottom: 28px;
+  }
+
+  .modal-question {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+  .modal-question-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+
+  .modal-question-text {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.6;
+    margin-bottom: 12px;
+  }
+
+  .modal-question-input {
+    width: 100%;
+    padding: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    resize: vertical;
+    min-height: 60px;
+    outline: none;
+    transition: border 0.2s;
+  }
+
+  .modal-question-input:focus {
+    border-color: var(--accent2);
+  }
+
+  .modal-buttons {
+    display: flex;
+    gap: 10px;
+  }
+
+  .modal-buttons .auth-btn {
+    flex: 1;
+    margin-top: 0;
+  }
+
+  .btn-secondary {
+    padding: 14px !important;
+    background: transparent !important;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'Syne', sans-serif;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--accent2);
+    color: var(--accent2);
+  }
 
   /* TOAST */
   .toast { position: fixed; bottom: 28px; right: 28px; z-index: 300; padding: 14px 20px; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; font-size: 14px; display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 32px rgba(0,0,0,0.4); transform: translateY(80px); opacity: 0; transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1); }
@@ -277,6 +582,9 @@
     .upload-grid { grid-template-columns: 1fr; }
     th:nth-child(4), td:nth-child(4), th:nth-child(3), td:nth-child(3) { display: none; }
     .splash-title { font-size: 36px; }
+    .ai-chat-bubble { width: 100%; max-width: 320px; }
+    .search-bar-wrap { flex-direction: column; }
+    .ai-search-btn { width: 100%; justify-content: center; }
   }
 </style>
 </head>
@@ -382,6 +690,7 @@
         <option>B.Tech</option><option>BCA</option><option>MCA</option><option>MBA</option>
       </select>
       <button class="search-btn" onclick="filterPapers()">Search</button>
+      <button class="ai-search-btn" onclick="openAIChatWidget()">✨ Ask AI</button>
     </div>
     <!-- Stats -->
     <div class="stats-row">
@@ -494,6 +803,29 @@
   </div>
 </div>
 
+<!-- FLOATING AI CHAT WIDGET -->
+<div class="ai-chat-widget" id="ai-chat-widget">
+  <div class="ai-chat-bubble" id="ai-chat-bubble">
+    <div class="ai-chat-header">
+      <div class="ai-chat-title">
+        <span>✨ AI Solver</span>
+      </div>
+      <button class="ai-chat-close" onclick="closeAIChatWidget()">✕</button>
+    </div>
+    <div class="ai-chat-content" id="ai-chat-messages">
+      <div class="ai-message bot">
+        <div class="ai-avatar bot">🤖</div>
+        <div class="ai-msg-text">Hey! 👋 Upload a question paper or ask me to solve specific questions. I can help you understand concepts & solutions!</div>
+      </div>
+    </div>
+    <div class="ai-chat-input-area">
+      <input type="text" class="ai-chat-input" id="ai-input" placeholder="Ask a question..." onkeypress="handleAIChatKeyPress(event)"/>
+      <button class="ai-chat-send" onclick="sendAIMessage()">Send</button>
+    </div>
+  </div>
+  <button class="ai-fab" id="ai-fab" onclick="toggleAIChatWidget()">✨</button>
+</div>
+
 <!-- PAPER MODAL -->
 <div class="modal-overlay" id="paper-modal" onclick="closePaperModal(event)">
   <div class="modal" style="position:relative;">
@@ -504,9 +836,40 @@
       <div class="meta-item"><label>Year</label><p id="modal-year">—</p></div>
       <div class="meta-item"><label>Course</label><p id="modal-course">—</p></div>
       <div class="meta-item"><label>Uploaded</label><p id="modal-date">—</p></div>
-      <div class="meta-item"><label>Downloads</label><p id="modal-dl">—</p></div>
     </div>
-    <button class="auth-btn" onclick="showToast('Download started!','success');document.getElementById('paper-modal').classList.remove('open')">⬇ Download Paper</button>
+    <div style="display: flex; gap: 10px;">
+      <button class="auth-btn" style="flex:1;margin-top:0;" onclick="showToast('Download started!','success');document.getElementById('paper-modal').classList.remove('open')">⬇ Download</button>
+      <button class="auth-btn" style="flex:1;margin-top:0;" onclick="openAISolverModal()">✨ Solve with AI</button>
+    </div>
+  </div>
+</div>
+
+<!-- AI SOLVER MODAL -->
+<div class="modal-overlay" id="ai-solver-modal" onclick="closeAISolverModal(event)">
+  <div class="modal ai-paper-modal" style="position:relative;">
+    <button class="modal-close" onclick="closeAISolverModal()">✕</button>
+    <h3>✨ AI Question Solver</h3>
+    <div class="sub" id="solver-subject">Data Structures - CS301</div>
+    <div class="modal-meta">
+      <div class="meta-item"><label>Course</label><p id="solver-course">B.Tech</p></div>
+      <div class="meta-item"><label>Year</label><p id="solver-year">2024</p></div>
+      <div class="meta-item"><label>Questions</label><p>5</p></div>
+    </div>
+    
+    <div class="modal-question">
+      <div class="modal-question-label">Ask or paste a question</div>
+      <textarea class="modal-question-input" id="question-input" placeholder="e.g. Explain binary search tree insertion..."></textarea>
+    </div>
+
+    <div class="modal-buttons">
+      <button class="auth-btn" onclick="solveQuestion()">🚀 Get Solution</button>
+      <button class="btn-secondary" onclick="closeAISolverModal()">Cancel</button>
+    </div>
+
+    <div style="margin-top: 20px; padding: 16px; background: var(--glass); border-radius: 12px; border: 1px solid var(--glass-border); display: none;" id="solution-box">
+      <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">AI Solution</div>
+      <div style="font-size:13px;line-height:1.8;color:var(--text);" id="solution-text"></div>
+    </div>
   </div>
 </div>
 
@@ -527,6 +890,7 @@ const PAPERS = [
 ];
 
 let allPapers = [...PAPERS];
+let currentPaper = null;
 
 // ── SPLASH → AUTH ──
 setTimeout(() => { navigate('splash', 'auth'); }, 2600);
@@ -609,6 +973,7 @@ function renderPapers(list) {
       </div>
       <div class="paper-actions">
         <button class="btn-view" onclick="event.stopPropagation();openPaperModal(${i})">👁 View</button>
+        <button class="btn-ai" onclick="event.stopPropagation();currentPaper=allPapers[${i}];openAISolverModal()">✨ Solve</button>
         <button class="btn-dl" onclick="event.stopPropagation();showToast('Download started!','success')">⬇ Download</button>
       </div>
     </div>`).join('');
@@ -627,18 +992,134 @@ function filterPapers() {
 }
 
 function openPaperModal(i) {
+  currentPaper = allPapers[i];
   const p = allPapers[i];
   document.getElementById('modal-title').textContent = p.subject;
   document.getElementById('modal-code').textContent = `${p.code} · ${p.course}`;
   document.getElementById('modal-year').textContent = p.year;
   document.getElementById('modal-course').textContent = p.course;
   document.getElementById('modal-date').textContent = p.uploads;
-  document.getElementById('modal-dl').textContent = p.dl;
   document.getElementById('paper-modal').classList.add('open');
 }
 
 function closePaperModal(e) {
   if (e.target.id === 'paper-modal') document.getElementById('paper-modal').classList.remove('open');
+}
+
+// ── AI CHAT ──
+function toggleAIChatWidget() {
+  const bubble = document.getElementById('ai-chat-bubble');
+  const fab = document.getElementById('ai-fab');
+  bubble.classList.toggle('open');
+  fab.classList.toggle('active');
+}
+
+function openAIChatWidget() {
+  const bubble = document.getElementById('ai-chat-bubble');
+  const fab = document.getElementById('ai-fab');
+  if (!bubble.classList.contains('open')) {
+    bubble.classList.add('open');
+    fab.classList.add('active');
+  }
+  document.getElementById('ai-input').focus();
+}
+
+function closeAIChatWidget() {
+  const bubble = document.getElementById('ai-chat-bubble');
+  const fab = document.getElementById('ai-fab');
+  bubble.classList.remove('open');
+  fab.classList.remove('active');
+}
+
+function sendAIMessage() {
+  const input = document.getElementById('ai-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+
+  const messagesContainer = document.getElementById('ai-chat-messages');
+  
+  // Add user message
+  const userMsgEl = document.createElement('div');
+  userMsgEl.className = 'ai-message user';
+  userMsgEl.innerHTML = `
+    <div class="ai-msg-text">${escapeHtml(msg)}</div>
+    <div class="ai-avatar user">👤</div>
+  `;
+  messagesContainer.appendChild(userMsgEl);
+
+  input.value = '';
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+  // Simulate AI response
+  setTimeout(() => {
+    const responses = [
+      "That's a great question! Let me think about that...",
+      "I can help you understand this concept better.",
+      "Based on the course material, here's what I know...",
+      "This is related to " + (currentPaper ? currentPaper.subject : "your studies") + ". Would you like me to elaborate?",
+      "I found some relevant information. Do you want more details?"
+    ];
+    
+    const botMsg = document.createElement('div');
+    botMsg.className = 'ai-message bot';
+    botMsg.innerHTML = `
+      <div class="ai-avatar bot">🤖</div>
+      <div class="ai-msg-text">${responses[Math.floor(Math.random() * responses.length)]}</div>
+    `;
+    messagesContainer.appendChild(botMsg);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  }, 600);
+}
+
+function handleAIChatKeyPress(e) {
+  if (e.key === 'Enter') {
+    sendAIMessage();
+  }
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// ── AI SOLVER MODAL ──
+function openAISolverModal() {
+  if (currentPaper) {
+    document.getElementById('solver-subject').textContent = `${currentPaper.subject} - ${currentPaper.code}`;
+    document.getElementById('solver-course').textContent = currentPaper.course;
+    document.getElementById('solver-year').textContent = currentPaper.year;
+  }
+  document.getElementById('ai-solver-modal').classList.add('open');
+  document.getElementById('question-input').focus();
+  document.getElementById('solution-box').style.display = 'none';
+}
+
+function closeAISolverModal(e) {
+  if (e && e.target.id !== 'ai-solver-modal') return;
+  document.getElementById('ai-solver-modal').classList.remove('open');
+  document.getElementById('question-input').value = '';
+}
+
+function solveQuestion() {
+  const question = document.getElementById('question-input').value.trim();
+  if (!question) {
+    showToast('Please enter a question first!', 'error');
+    return;
+  }
+
+  const solutions = [
+    "Binary Search Tree insertion maintains the BST property where left < parent < right. To insert: 1) Compare with root 2) If smaller, go left; if larger, go right 3) Repeat until empty spot found 4) Create new node there. Time complexity: O(log n) average, O(n) worst case.",
+    "The concept you're asking about is fundamental. Here's the step-by-step approach:\n\n1. First, understand the base case\n2. Identify the recursive pattern\n3. Apply the formula\n4. Verify with test cases\n\nThis approach works for most problems in this subject.",
+    "Great question! This relates to the core principles we discussed. The algorithm works by:\n\n• Breaking down the problem into subproblems\n• Solving the simplest case first\n• Building up the solution\n• Optimizing for time and space\n\nWould you like me to walk through a specific example?",
+    "Based on the curriculum, here's what you need to know:\n\nKey Points:\n• Concept 1: Involves understanding fundamentals\n• Concept 2: Build upon previous knowledge\n• Concept 3: Practice with variations\n\nRecommendation: Review the lecture notes and try similar problems."
+  ];
+
+  const solutionBox = document.getElementById('solution-box');
+  document.getElementById('solution-text').textContent = solutions[Math.floor(Math.random() * solutions.length)];
+  solutionBox.style.display = 'block';
+
+  showToast('Solution generated! 🎉', 'success');
 }
 
 // ── ADMIN ──
